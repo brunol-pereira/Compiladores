@@ -13,28 +13,28 @@ public class Principal {
         String arquivoSaida = args[1];
         try(PrintWriter pw = new PrintWriter(arquivoSaida)) {
             try {
-                // args[0] é o primeiro argumento da linha de comando
                 CharStream cs = CharStreams.fromFileName(args[0]);
                 AlgumaLexer lex = new AlgumaLexer(cs);
     
                 Token t = null;
                 while ((t = lex.nextToken()).getType() != Token.EOF) {
                     String nomeToken = AlgumaLexer.VOCABULARY.getDisplayName(t.getType());
+                    System.out.print("<" + AlgumaLexer.VOCABULARY.getDisplayName(t.getType())+","+ t.getText()+">");
                     
-                    // Mensagem de erro para qualquer simbolo não identificado. 
-                    if(nomeToken.equals("ERRO")) {
-                        pw.println("Linha "+t.getLine()+": "+t.getText()+" - simbolo nao identificado");
-                        break;
-                    }
-                    // Mensagem de erro customizada para comentários não fechados.
-                    else if(nomeToken.equals("COMENT_N_FECHADO")) {
+                    // ERRO comentário não fechado
+                    if(nomeToken.equals("COMENTARIO_NAO_FECHADO")) {
                         pw.println("Linha "+t.getLine()+": comentario nao fechado");
                         break;
                     }
                     
-                    // Mensagem de erro customizada para strings não fechadas.
-                    else if(nomeToken.equals("CADEIA_N_FECHADA")) {
+                    // ERRO cadeia não fechada
+                    else if(nomeToken.equals("CADEIA_NAO_FECHADA")) {
                         pw.println("Linha "+t.getLine()+": cadeia literal nao fechada");
+                        break;
+                    }
+                    // ERRO - simbolo não identificado 
+                    else if(nomeToken.equals("ERRO")) {
+                        pw.println("Linha "+t.getLine()+": "+t.getText()+" - simbolo nao identificado");
                         break;
                     }
                     else {
