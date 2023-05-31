@@ -10,72 +10,78 @@ DECLARE
         : 'declare';
 CONSTANTE
         : 'constante';
-LITERAL
-        : 'literal';
-INTEIRO    
-        : 'inteiro';
-REAL
-        : 'real';
+
 LOGICO  
         : 'logico';
 TRUE  
         : 'verdadeiro';
 FALSE  
         : 'falso';
+
+LITERAL
+        : 'literal';
+INTEIRO    
+        : 'inteiro';
+REAL
+        : 'real';
+
 AND              
         : 'e';
 OR               
         : 'ou';
 NOT              
         : 'nao';
+
 IF               
         : 'se';
+ENDIF            
+        : 'fim_se';
 THEN             
         : 'entao';
 ELSE             
         : 'senao';
-ENDIF            
-        : 'fim_se';
 CASO             
         : 'caso';
-SEJA             
-        : 'seja';
 FIM_CASO         
         : 'fim_caso';
+SEJA             
+        : 'seja';
 PARA             
         : 'para';
+FIM_PARA         
+        : 'fim_para';
 ATE              
         : 'ate';
 FACA             
         : 'faca';
-FIM_PARA         
-        : 'fim_para';
 WHILE            
         : 'enquanto';
 ENDWHILE         
         : 'fim_enquanto';
-TIPO             
-        : 'tipo';
+        
 REGISTRO         
         : 'registro';
 FIM_REGISTRO     
         : 'fim_registro';
 PROCEDIMENTO     
         : 'procedimento';
-VAR              
-        : 'var';
 FIM_PROCEDIMENTO 
         : 'fim_procedimento';
 FUNCAO           
         : 'funcao';
-RETORNE          
-        : 'retorne';
 FIM_FUNCAO       
         : 'fim_funcao';
-LEIA             
-        : 'leia';
+RETORNE          
+        : 'retorne';
 ESCREVA          
         : 'escreva';
+
+TIPO             
+        : 'tipo';
+VAR              
+        : 'var';
+LEIA             
+        : 'leia';
 
 /* -------------------- DELIMITADORES ------------*/
 DELIM            
