@@ -178,6 +178,10 @@ COMENTARIO_NAO_FECHADO
 ERRO             
         : .;
 
+
+
+        
+
 programa
     : declaracoes 'algoritmo' corpo 'fim_algoritmo'
     ;
@@ -393,8 +397,7 @@ fator_logico
     ;
     
 parcela_logica
-    : ( 'verdadeiro' | 'falso' )
-	| exp_relacional
+    : ( 'verdadeiro' | 'falso' ) | exp_relacional
     ;
     
 op_logico_1

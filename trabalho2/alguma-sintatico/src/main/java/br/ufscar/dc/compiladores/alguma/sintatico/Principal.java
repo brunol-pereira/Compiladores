@@ -1,5 +1,6 @@
 package br.ufscar.dc.compiladores.alguma.sintatico;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -7,79 +8,68 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import java.io.File;
 import java.io.PrintWriter;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public class Principal {
-    public static void main(String args[]) throws IOException {
-        PrintWriter writer = null;
+    public static void main(String args[]){
 
-        // Altera a saída do programa de acordo com a quantidade de argumentos
-        switch (args.length) {
-            case 1:
-                // Opção para entrada de um único argumento de entrada e saída na saída padrão
-                writer = new PrintWriter(System.out);
-                writer.println();
-                break;
-            case 2:
-                // Opção padrão para dois argumentos, saída em arquivo
-                try {
-                    writer = new PrintWriter(new File(args[1]));
-                } catch (Exception e) {
-                    System.out.println("Falha ao abrir o arquivo");
-                    e.printStackTrace();
+        try{
+            String arquivoSaida = args[1];
+            CharStream cs = CharStreams.fromFileName(args[0]);
+            
+            try(PrintWriter pw = new PrintWriter(arquivoSaida)) {
+
+                try{
+                    AlgumaLexer lex = new AlgumaLexer(cs);
+
+                    //Depura o Léxico
+                    Token t = null;
+                    boolean lexError = false;
+
+                    while ((t = lex.nextToken()).getType() != Token.EOF) {
+                        String nomeToken = AlgumaLexer.VOCABULARY.getDisplayName(t.getType());
+                        
+                        // ERRO - comentário não fechado
+                        if(nomeToken.equals("COMENTARIO_NAO_FECHADO")) {
+                            throw new ParseCancellationException("Linha "+t.getLine()+": comentario nao fechado");
+                            lexError = true;
+                        }
+                        
+                        // ERRO - cadeia não fechada
+                        else if(nomeToken.equals("CADEIA_NAO_FECHADA")) {
+                            throw new ParseCancellationException("Linha "+t.getLine()+": cadeia literal nao fechada");
+                            lexError = true;
+                        }
+                        // ERRO - simbolo não identificado 
+                        else if(nomeToken.equals("ERRO")) {
+                            throw new ParseCancellationException("Linha "+t.getLine()+": "+t.getText()+" - simbolo nao identificado");
+                            lexError = true;
+                        }
+                    }
+
+                    if(lexError = true){
+
+                        cs = CharStreams.fromFileName(args[0]);
+                        lex = new AlgumaLexer(cs);
+
+                        CommonTokenStream tokens = new CommonTokenStream(lex);
+                        AlgumaParser parser = new AlgumaParser(tokens);
+                        MyCustomErrorListener mcel = new MyCustomErrorListener();
+                        parser.removeErrorListener();
+                        parser.addErrorListener(mcel);
+
+                        parser.programa();
+                    }
+
+                } catch (ParseCancellationException ex){
+                    pw.println(e.getMessage());
+                    pw.println("Fim da compilacao");
                 }
-                break;
-            default:
-                // Número inválido de argumentos
-                System.out.println("Número inválido de argumentos!");
-                System.out.println("Recebeu " + args.length + " argumentos, esperava no mínimo 1:");
-                System.out.println("<caminho para o código fonte LA> [caminho para arquivo de saída]");
-                return; // Termina o programa prematuramente
-        }
-
-        // Análise Léxica
-        CharStream cs = CharStreams.fromFileName(args[0]);
-        AlgumaLexer lex = new AlgumaLexer(cs);
-        Boolean erroLexico = false;
-
-        Token t = null;
-        while ((t = lex.nextToken()).getType() != Token.EOF) {
-            String nomeToken = AlgumaLexer.VOCABULARY.getDisplayName(t.getType());
-
-            // ERRO comentário não fechado
-            if (nomeToken.equals("COMENTARIO_NAO_FECHADO")) {
-                writer.println("Linha " + t.getLine() + ": comentario nao fechado");
-                erroLexico = true;
-                break;
+            } catch(FileNotFoundException fnfe) {
+                System.err.println("O arquivo/diretório não existe:"+args[1]);
             }
-
-            // ERRO cadeia não fechada
-            else if (nomeToken.equals("CADEIA_NAO_FECHADA")) {
-                writer.println("Linha " + t.getLine() + ": cadeia literal nao fechada");
-                erroLexico = true;
-                break;
-            }
-            // ERRO - simbolo não identificado
-            else if (nomeToken.equals("ERRO")) {
-                writer.println("Linha " + t.getLine() + ": " + t.getText() + " - simbolo nao identificado");
-                erroLexico = true;
-                break;
-            }
+        } catch (IOException ex) {
+            e.printStackTrace();
         }
-
-        // Análise Sintática
-        if (!erroLexico) {
-            cs = CharStreams.fromFileName(args[0]);
-            AlgumaLexer lexer = new AlgumaLexer(cs);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            AlgumaParser parser = new AlgumaParser(tokens);
-
-            MyCustomErrorListener mcel = new MyCustomErrorListener(writer);
-            parser.addErrorListener(mcel);
-
-            parser.programa();
-        }
-
-        // writer.println("Fim da compilacao");
-        // writer.close();
     }
 }
