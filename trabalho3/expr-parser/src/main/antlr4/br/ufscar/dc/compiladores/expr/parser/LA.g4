@@ -1,4 +1,6 @@
-grammar Expressoes;
+grammar LA;
+
+//T1 - Léxico
 
 /* -------------------- PALAVRAS CHAVE ------------*/
 
@@ -179,8 +181,9 @@ ERRO
         : .;
 
 
+//T2 - Sintática
 
-        
+/* -------------------- PROGRAMA ------------*/       
 
 programa
     : declaracoes 'algoritmo' corpo 'fim_algoritmo'
