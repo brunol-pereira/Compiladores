@@ -16,9 +16,6 @@ public class Escopos {
         pilhaDeTabelas.push(new TabelaDeSimbolos());
     }
 
-    public void abandonarEscopo() {
-        pilhaDeTabelas.pop();
-    }
     
     public TabelaDeSimbolos obterEscopoAtual() {
         return pilhaDeTabelas.peek();
@@ -28,4 +25,7 @@ public class Escopos {
         return pilhaDeTabelas;
     }
 
+    public void abandonarEscopo() {
+        pilhaDeTabelas.pop();
+    }
 }
