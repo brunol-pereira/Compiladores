@@ -9,7 +9,7 @@ public class LASemanticoUtils {
     
     public static void adicionarErroSemantico(Token t, String mensagem) {
         int linha = t.getLine();
-        int coluna = t.getCharPositionInLine();
+        //int coluna = t.getCharPositionInLine();
         errosSemanticos.add(String.format("Erro %d:%d - %s", linha, coluna, mensagem));
     }
     
