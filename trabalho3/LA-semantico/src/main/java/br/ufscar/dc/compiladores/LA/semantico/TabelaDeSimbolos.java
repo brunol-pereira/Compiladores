@@ -4,41 +4,77 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TabelaDeSimbolos {
+
+    public Table.Tipos returnType;
     public enum TipoLA {
         INTEIRO,
         REAL,
         LITERAL,
         LOGICO,
-        FUNCAO,
-        PROCEDIMENTO,
-        REGISTRO,
-        PONTEIRO,
-        INVALIDO
+        INVALIDO,
+        NAO_DECLARADO
     }
-    
-    class EntradaTabelaDeSimbolos {
-        TipoAlguma tipo;
 
-        private EntradaTabelaDeSimbolos(String nome, TipoAlguma tipo) {
-            this.tipo = tipo;
+    public enum EstruturaLA {
+        VARIAVEL,
+        CONSTANTE,
+        TIPO,
+        PROCEDIMENTO,
+        FUNCAO
+    } 
+
+    class EntradaTabelaDeSimbolos {
+        String nome;
+        TipoLA varTipo;
+        EstruturaLA estrutura;
+
+        public EntradaTabelaDeSimbolos(String nome, EstruturaLA estrutura,TipoLA varTipo){
+            this.nome = nome;
+            this.varTipo = varTipo;
+            this.estrutura = estrutura;
         }
     }
-    
-    private final Map<String, EntradaTabelaDeSimbolos> tabela;
-    
+
+    private HashMap<String, EntradaTabelaDeSimbolos> tabelaDeSimbolos;
+    private TabelaDeSimbolos global;
+
     public TabelaDeSimbolos() {
-        this.tabela = new HashMap<>();
+        this.TabelaDeSimbolos = new HashMap<>();
+        this.global = null;
     }
     
-    public void adicionar(String nome, TipoAlguma tipo) {
-        tabela.put(nome, new EntradaTabelaDeSimbolos(tipo));
+    void setGlobal(TabelaDeSimbolos global){
+        this.global = global;
+    }
+    
+    public void adicionar(String nome, EstruturaLA estrutura,TipoLA varTipo ) {
+
+        EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
+        tabela.nome = nome;
+        tabela.estrutura = estrutura;
+        tabela.varTipo = varTipo;
+
+        tabelaDeSimbolos.put(nome, tabela);
     }
     
     public boolean existe(String nome) {
-        return tabela.containsKey(nome);
+        if(global = null){
+            return tabelaDeSimbolos.containsKey(nome);
+        }else {
+            return tabelaDeSimbolos.containsKey(nome) || global.existe(nome);
+        }
     }
     
-    public TipoAlguma verificar(String nome) {
-        return tabela.get(nome).tipo;
+    public EntradaTabelaDeSimbolos verificar(String nome) {
+        if(global = null){
+            return tabelaDeSimbolos.get(nome);
+        }else{
+            if(tabelaDeSimbolos.containsKey(nome)){
+                return tabelaDeSimbolos.get(name);
+            }else{
+                return global.verificar(nome);
+            }
+        }
+        // return tabela.get(nome).tipo;
     }
 }
