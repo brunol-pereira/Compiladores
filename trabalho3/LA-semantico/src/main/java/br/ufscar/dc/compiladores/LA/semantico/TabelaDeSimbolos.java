@@ -4,33 +4,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TabelaDeSimbolos {
-    // public TabelaDeSimbolos.estrutTipoLA returnType;
 
-    public enum EstrutTipoLA {
+    public Table.Tipos returnType;
+    public enum TipoLA {
         INTEIRO,
         REAL,
         LITERAL,
         LOGICO,
-        NAO_DECLARADO,
-        INVALIDO
+        INVALIDO,
+        NAO_DECLARADO
     }
 
-    public enum VarTipoLA{
+    public enum EstruturaLA {
         VARIAVEL,
         CONSTANTE,
         TIPO,
         PROCEDIMENTO,
         FUNCAO
-        // REGISTRO,
-        // PONTEIRO,
     } 
 
     class EntradaTabelaDeSimbolos {
         String nome;
-        EstrutTipoLA estrutura;
-        VarTipoLA varTipo;
+        TipoLA varTipo;
+        EstruturaLA estrutura;
 
-        public EntradaTabelaDeSimbolos(String nome, EstrutTipoLA estrutura,VarTipoLA estrutura){
+        public EntradaTabelaDeSimbolos(String nome, EstruturaLA estrutura,TipoLA varTipo){
             this.nome = nome;
             this.varTipo = varTipo;
             this.estrutura = estrutura;
@@ -39,17 +37,24 @@ public class TabelaDeSimbolos {
 
     private HashMap<String, EntradaTabelaDeSimbolos> tabelaDeSimbolos;
     private TabelaDeSimbolos global;
+
+    public TabelaDeSimbolos() {
+        this.TabelaDeSimbolos = new HashMap<>();
+        this.global = null;
+    }
     
     void setGlobal(TabelaDeSimbolos global){
         this.global = global;
     }
     
-    public void adicionar(String nome, VarTipoLA varTipo, EstrutTipoLA estrutura ) {
-        // TabelaDeSimbolos tabela = new TabelaDeSimbolos();
-        // this.nome = nome;
-        // this.varTipo = varTipo;
-        // this.estrutura = estrutura;
-        tabelaDeSimbolos.put(nome, new EntradaTabelaDeSimbolos(tipo));
+    public void adicionar(String nome, EstruturaLA estrutura,TipoLA varTipo ) {
+
+        EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
+        tabela.nome = nome;
+        tabela.estrutura = estrutura;
+        tabela.varTipo = varTipo;
+
+        tabelaDeSimbolos.put(nome, tabela);
     }
     
     public boolean existe(String nome) {
