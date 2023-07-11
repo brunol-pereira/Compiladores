@@ -19,7 +19,7 @@ public class LASemantico extends LABaseVisitor<Void> {
 
             // Verifica se o identificador da variável já foi declarado anteriormente.
             if (currentScope.existe(variableIdentifier)) {
-                LASemanticoUtils.addSemanticoErro(ctxIdentVariable.IDENT(0).getSymbol(),
+                LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                         "identificador " + variableIdentifier + " ja declarado anteriormente\n");
             } else {
                 var varTipo = ctx.variavel().tipo().getText();
@@ -50,14 +50,14 @@ public class LASemantico extends LABaseVisitor<Void> {
                             // Verificamos se o tipo já foi declarado anteriormente no escopo atual e se é um tipo válido.
                             varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
                             if (currentScope.existe(variableIdentifier)) {
-                                LASemanticoUtils.addSemanticoErro(ctxIdentVariable.IDENT(0).getSymbol(),
+                                LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                                         "identificador " + variableIdentifier + " ja declarado anteriormente\n");
                             }
                         }
 
                         //Se o tipo não foi declarado, um erro semântico é adicionado informando que o tipo não foi declarado
                         if(!currentScope.existe(varTipo)){
-                            LASemanticoUtils.addSemanticoErro(ctxIdentVariable.IDENT(0).getSymbol(),
+                            LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                             "tipo " + varTipo + " nao declarado\n");
                             // A variável é adicionada ao escopo atual com um tipo inválido (INVALIDO).
                             currentScope.adicionar(variableIdentifier,
@@ -97,7 +97,7 @@ public class LASemantico extends LABaseVisitor<Void> {
             var atribuition = ctx.cmdAtribuicao().getText().split("<-");
             if (!LASemanticoUtils.verificarTipo(leftValue, rightValue) && !atribuition[0].contains("^")) {
                 // Esse erro informa que a atribuição não é compatível para o identificador presente na atribuição.
-                LASemanticoUtils.addSemanticoErro(ctx.cmdAtribuicao().identificador().IDENT(0).getSymbol(),
+                LASemanticoUtils.adicionarErroSemantico(ctx.cmdAtribuicao().identificador().IDENT(0).getSymbol(),
                         "atribuicao nao compativel para " + ctx.cmdAtribuicao().identificador().getText() + "\n");
             }
             
@@ -116,23 +116,22 @@ public class LASemantico extends LABaseVisitor<Void> {
         return super.visitarExp_aritmetica(ctx);
     }
     
-    //ao declarar constante, temos de garantir que o nome dela é novo
-    @Override
-    public Object visitDeclaracao_constante(Declaracao_constanteContext ctx) {
-        TabelaDeSimbolos escopoAtual = escopos.getEscopo();
-        if (escopoAtual.existe(ctx.IDENT().getText())) {
-            SemanticoUtils.adicionarErroSemantico(ctx.start, "constante" + ctx.IDENT().getText()
-                    + " ja declarado anteriormente");
-        } else {
-            TabelaDeSimbolos.Tipos tipo = TabelaDeSimbolos.Tipos.INT;
-            TabelaDeSimbolos.Tipos aux = SemanticoUtils.getTipo(ctx.tipo_basico().getText()) ;
-            if(aux != null)
-                tipo = aux;
-            escopoAtual.insert(ctx.IDENT().getText(), tipo, TabelaDeSimbolos.Structure.CONST);
-        }
+    // @Override
+    // public Object visitDeclaracao_constante(Declaracao_constanteContext ctx) {
+    //     TabelaDeSimbolos escopoAtual = escopos.getEscopo();
+    //     if (escopoAtual.existe(ctx.IDENT().getText())) {
+    //         SemanticoUtils.adicionarErroSemantico(ctx.start, "constante" + ctx.IDENT().getText()
+    //                 + " ja declarado anteriormente");
+    //     } else {
+    //         TabelaDeSimbolos.Tipos tipo = TabelaDeSimbolos.Tipos.INT;
+    //         TabelaDeSimbolos.Tipos aux = SemanticoUtils.getTipo(ctx.tipo_basico().getText()) ;
+    //         if(aux != null)
+    //             tipo = aux;
+    //         escopoAtual.insert(ctx.IDENT().getText(), tipo, TabelaDeSimbolos.Structure.CONST);
+    //     }
 
-        return super.visitDeclaracao_constante(ctx);
-    }
+    //     return super.visitDeclaracao_constante(ctx);
+    // }
 
     
 

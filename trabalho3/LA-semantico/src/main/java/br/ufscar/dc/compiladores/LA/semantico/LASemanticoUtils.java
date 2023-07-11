@@ -12,15 +12,38 @@ public class LASemanticoUtils {
         //int coluna = t.getCharPositionInLine();
         errosSemanticos.add(String.format("Erro %d: %s", linha, mensagem));
     }
-    
-    public static TabelaDeSimbolos.VarTipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos, LAParser.ExpressaoAritmeticaContext ctx) {
+
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.IdentificadorContext ctx) {
+        var identifier = ctx.getText();
+
+        if (!tabelaDeSimbolos.existe(identifier)) {
+            adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador " + identifier + " nao declarado\n");
+        }
+        else{
+            EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(identifier);
+            if (ident.varTipo == TabelaDeSimbolos.TipoLA.INTEIRO)
+                return TabelaDeSimbolos.TipoLA.INTEIRO;
+            if (ident.varTipo == TabelaDeSimbolos.TipoLA.LITERAL)
+                return TabelaDeSimbolos.TipoLA.LITERAL;
+            if (ident.varTipo == TabelaDeSimbolos.TipoLA.REAL)
+                return TabelaDeSimbolos.TipoLA.REAL;
+            if (ident.varTipo == TabelaDeSimbolos.TipoLA.LOGICO)
+                return TabelaDeSimbolos.TipoLA.LOGICO;
+        }
+
+        return TabelaDeSimbolos.TipoLA.NAO_DECLARADO;
+    }
+
+    // Verifica o tipo em contexto de expressão
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.ExpressaoContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
-        for (var ta : ctx.termoAritmetico()) {
-            TabelaDeSimbolos.TipoLA aux = verificarTipo(tabela, ta);
+        for (var tl : ctx.termo_logico()) {
+            TabelaDeSimbolos.TipoLA aux = verificarTipo(tabelaDeSimbolos, tl);
             if (ret == null) {
                 ret = aux;
-            } else if (ret != aux && aux != TabelaDeSimbolos.TipoLA.INVALIDO) {
-                adicionarErroSemantico(ctx.start, "Expressão " + ctx.getText() + " contém tipos incompatíveis");
+            } else if (!verificarTipo(ret, aux)) {
                 ret = TabelaDeSimbolos.TipoLA.INVALIDO;
             }
         }
@@ -28,42 +51,243 @@ public class LASemanticoUtils {
         return ret;
     }
 
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela, LAParser.TermoAritmeticoContext ctx) {
+    // Verifica o tipo em contexto de termo lógico
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos, LAParser.Termo_logicoContext ctx){
         TabelaDeSimbolos.TipoLA ret = null;
-
-        for (var fa : ctx.fatorAritmetico()) {
-            TabelaDeSimbolos.TipoLA aux = verificarTipo(tabela, fa);
+        for (var fL : ctx.fator_logico()){
+            TabelaDeSimbolos.TipoLA aux = verificarTipo(tabelaDeSimbolos, fL);
             if (ret == null) {
                 ret = aux;
-            } else if (ret != aux && aux != TabelaDeSimbolos.TipoLA.INVALIDO) {
-                adicionarErroSemantico(ctx.start, "Termo " + ctx.getText() + " contém tipos incompatíveis");
+            } else if (!verificarTipo(ret, aux)) {
+                ret = TabelaDeSimbolos.TipoLA.INVALIDO;
+            }
+        }
+
+        return ret;
+    }
+
+    // Verifica o tipo em contexto de fator lógico
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.Fator_logicoContext ctx) {
+        return verificarTipo(tabelaDeSimbolos, ctx.parcela_logica());
+    }
+
+    // Verifica o tipo em contexto de parcela lógica
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.Parcela_logicaContext ctx) {
+        if (ctx.exp_relacional() != null) {
+            return verificarTipo(tabelaDeSimbolos, ctx.exp_relacional());
+        } else {
+            return TabelaDeSimbolos.TipoLA.LOGICO;
+        }
+    }
+
+    // Verifica o tipo em contexto de expressão relacional
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.Exp_relacionalContext ctx) {
+        TabelaDeSimbolos.TipoLA ret = null;
+        if (ctx.exp_aritmetica().size() == 1)
+            for (var ea : ctx.exp_aritmetica()) {
+                var aux = verificarTipo(tabelaDeSimbolos, ea);
+                if (ret == null) {
+                    ret = aux;
+                } else if (!verificarTipo(ret, aux)) {
+                    ret = TabelaDeSimbolos.TipoLA.INVALIDO;
+                }
+            } else {
+            for (var ea : ctx.exp_aritmetica()) {
+                verificarTipo(tabelaDeSimbolos, ea);
+            }
+
+            return TabelaDeSimbolos.TipoLA.LOGICO;
+        }
+
+        return ret;
+    }
+
+    // Verifica o tipo em contexto de expressão aritmética
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.Exp_aritmeticaContext ctx) {
+        TabelaDeSimbolos.TipoLA ret = null;
+
+        for (var te : ctx.termo()) {
+            var aux = verificarTipo(tabelaDeSimbolos, te);
+            if (ret == null) {
+                ret = aux;
+            } else if (!verificarTipo(ret, aux)) {
                 ret = TabelaDeSimbolos.TipoLA.INVALIDO;
             }
         }
         return ret;
     }
 
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela, LAParser.FatorAritmeticoContext ctx) {
-        if (ctx.NUMINT() != null) {
+    // Verifica o tipo em contexto de termo
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.TermoContext ctx) {
+        TabelaDeSimbolos.TipoLA ret = null;
+
+        for (var fa : ctx.fator()) {
+            var aux = verificarTipo(tabelaDeSimbolos, fa);
+            if (ret == null) {
+                ret = aux;
+            } else if (!verificarTipo(ret, aux)) {
+                ret = TabelaDeSimbolos.TipoLA.INVALIDO;
+            }
+        }
+        return ret;
+    }
+
+    // Verifica o tipo em contexto de fator
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.FatorContext ctx) {
+        TabelaDeSimbolos.TipoLA ret = null;
+
+        for (var pa : ctx.parcela()) {
+            var aux = verificarTipo(tabelaDeSimbolos, pa);
+            if (ret == null) {
+                ret = aux;
+            } else if (!verificarTipo(ret, aux)) {
+                ret = TabelaDeSimbolos.TipoLA.INVALIDO;
+            }
+        }
+
+        return ret;
+    }
+
+    // Verifica o tipo em contexto de parcela
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.ParcelaContext ctx) {
+
+        if (ctx.parcela_unario() != null) {
+            return verificarTipo(tabelaDeSimbolos, ctx.parcela_unario());
+        } else {
+            return verificarTipo(tabelaDeSimbolos, ctx.parcela_nao_unario());
+        }
+    }
+
+    // Verifica o tipo em contexto de parcela unária
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.Parcela_unarioContext ctx) {
+        TabelaDeSimbolos.TipoLA ret = null;
+
+        if (ctx.NUM_INT() != null) {
             return TabelaDeSimbolos.TipoLA.INTEIRO;
         }
-        if (ctx.NUMREAL() != null) {
+        if (ctx.NUM_REAL() != null) {
             return TabelaDeSimbolos.TipoLA.REAL;
         }
-        if (ctx.VARIAVEL() != null) {
-            String nomeVar = ctx.VARIAVEL().getText();
-            if (!tabela.existe(nomeVar)) {
-                adicionarErroSemantico(ctx.VARIAVEL().getSymbol(), "Variável " + nomeVar + " não foi declarada antes do uso");
-                return TabelaDeSimbolos.TipoLA.INVALIDO;
+        if (ctx.IDENT() != null) {
+            // function
+            if (!tabelaDeSimbolos.existe(ctx.IDENT().getText())) {
+                adicionarErroSemantico(ctx.identificador().IDENT(0).getSymbol(),
+                        "identificador " + ctx.IDENT().getText() + " nao declarado\n");
             }
-            return verificarTipo(tabela, nomeVar);
+
+            for (var exp : ctx.expressao()) {
+                var aux = verificarTipo(tabelaDeSimbolos, exp);
+                if (ret == null) {
+                    ret = aux;
+                } else if (!verificarTipo(ret, aux)) {
+                    ret = TabelaDeSimbolos.TipoLA.INVALIDO;
+                }
+            }
         }
-        // se não for nenhum dos tipos acima, só pode ser uma expressão
-        // entre parêntesis
-        return verificarTipo(tabela, ctx.expressaoAritmetica());
+
+        if (ctx.identificador() != null) {
+            return verificarTipo(tabelaDeSimbolos, ctx.identificador());
+        }
+
+        if (ctx.IDENT() == null && ctx.expressao() != null) {
+            for (var exp : ctx.expressao()) {
+                return verificarTipo(tabelaDeSimbolos, exp);
+            }
+        }
+
+        return ret;
     }
+
+    // Verifica se os tipos de atribuição são válidos
+    public static boolean verificarTipo(TabelaDeSimbolos.TipoLA tipo1, TabelaDeSimbolos.TipoLA tipo2) {
+        if (tipo1 == tipo2)
+            return true;
+        if (tipo1 == TabelaDeSimbolos.TipoLA.NAO_DECLARADO || tipo2 == TabelaDeSimbolos.TipoLA.NAO_DECLARADO)
+            return true;
+        if (tipo1 == TabelaDeSimbolos.TipoLA.INVALIDO || tipo2 == TabelaDeSimbolos.TipoLA.INVALIDO)
+            return false;
+        if ((tipo1 == TabelaDeSimbolos.TipoLA.INTEIRO || tipo1 == TabelaDeSimbolos.TipoLA.REAL) &&
+                (tipo2 == TabelaDeSimbolos.TipoLA.INTEIRO || tipo2 == TabelaDeSimbolos.TipoLA.REAL))
+            return true;
+        if (tipo1 != tipo2)
+            return false;
+
+        return true;
+    }
+
+    // Verifica o tipo em contexto de parcela não unária
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+            LAParser.Parcela_nao_unarioContext ctx) {
+        TabelaDeSimbolos.TipoLA ret = null;
+
+        if (ctx.CADEIA() != null) {
+            ret = TabelaDeSimbolos.TipoLA.LITERAL;
+        }
+        return ret;
+    }
+
+
+
     
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela, String nomeVar) {
-        return tabela.verificar(nomeVar);
-    }
+    // public static TabelaDeSimbolos.VarTipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos, LAParser.ExpressaoAritmeticaContext ctx) {
+    //     TabelaDeSimbolos.TipoLA ret = null;
+    //     for (var ta : ctx.termoAritmetico()) {
+    //         TabelaDeSimbolos.TipoLA aux = verificarTipo(tabela, ta);
+    //         if (ret == null) {
+    //             ret = aux;
+    //         } else if (ret != aux && aux != TabelaDeSimbolos.TipoLA.INVALIDO) {
+    //             adicionarErroSemantico(ctx.start, "Expressão " + ctx.getText() + " contém tipos incompatíveis");
+    //             ret = TabelaDeSimbolos.TipoLA.INVALIDO;
+    //         }
+    //     }
+
+    //     return ret;
+    // }
+
+    // public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela, LAParser.TermoAritmeticoContext ctx) {
+    //     TabelaDeSimbolos.TipoLA ret = null;
+
+    //     for (var fa : ctx.fatorAritmetico()) {
+    //         TabelaDeSimbolos.TipoLA aux = verificarTipo(tabela, fa);
+    //         if (ret == null) {
+    //             ret = aux;
+    //         } else if (ret != aux && aux != TabelaDeSimbolos.TipoLA.INVALIDO) {
+    //             adicionarErroSemantico(ctx.start, "Termo " + ctx.getText() + " contém tipos incompatíveis");
+    //             ret = TabelaDeSimbolos.TipoLA.INVALIDO;
+    //         }
+    //     }
+    //     return ret;
+    // }
+
+    // public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela, LAParser.FatorAritmeticoContext ctx) {
+    //     if (ctx.NUMINT() != null) {
+    //         return TabelaDeSimbolos.TipoLA.INTEIRO;
+    //     }
+    //     if (ctx.NUMREAL() != null) {
+    //         return TabelaDeSimbolos.TipoLA.REAL;
+    //     }
+    //     if (ctx.VARIAVEL() != null) {
+    //         String nomeVar = ctx.VARIAVEL().getText();
+    //         if (!tabela.existe(nomeVar)) {
+    //             adicionarErroSemantico(ctx.VARIAVEL().getSymbol(), "Variável " + nomeVar + " não foi declarada antes do uso");
+    //             return TabelaDeSimbolos.TipoLA.INVALIDO;
+    //         }
+    //         return verificarTipo(tabela, nomeVar);
+    //     }
+    //     // se não for nenhum dos tipos acima, só pode ser uma expressão
+    //     // entre parêntesis
+    //     return verificarTipo(tabela, ctx.expressaoAritmetica());
+    // }
+    
+    // public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela, String nomeVar) {
+    //     return tabela.verificar(nomeVar);
+    // }
 }

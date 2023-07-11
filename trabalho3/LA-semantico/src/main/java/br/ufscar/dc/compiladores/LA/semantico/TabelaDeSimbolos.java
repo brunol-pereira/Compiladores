@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class TabelaDeSimbolos {
 
-    public Table.Tipos returnType;
     public enum TipoLA {
         INTEIRO,
         REAL,
