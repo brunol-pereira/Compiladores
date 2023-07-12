@@ -1,18 +1,6 @@
-# FAZER ALTERAÇÕES DO README
+# Trabalho para implementação de um Analisador Semântico.
 
-
-
-
-
-
-
-
-
-
-
-# Trabalho para implementação de um Analisador Sintático.
-
-Trabalho 2 de Construção de Compiladores, cujo objetivo é implementar um Analisador Sintático para a linguagem LA (Linguagem Algorítmica).
+Trabalho 3 de Construção de Compiladores, cujo objetivo é implementar um Analisador Semântico para a linguagem LA (Linguagem Algorítmica).
 
 <div>
 
@@ -31,11 +19,11 @@ Estes são os requisitos para execução e compilação do projeto: **Java 11** 
 
 ## Comandos necessários
 
-Para compilar e executar este programa, primeiro você deve entrar na pasta chamada `alguma-sintatico`. Em seguida execute os comandos abaixo no terminal:
+Para compilar e executar este programa, primeiro você deve entrar na pasta chamada `LA-semantico`. Em seguida execute os comandos abaixo no terminal:
 
 ```
   mvn package
 ```
 ```
-  java -jar target/alguma-sintatico-1.0-SNAPSHOT-jar-with-dependencies.jar [caminho para arquivo de entrada] [caminho para o arquivo de saída]
+  java -jar target/LA-semantico-1.0-SNAPSHOT-jar-with-dependencies.jar [caminho para arquivo de entrada] [caminho para o arquivo de saída]
 ```
