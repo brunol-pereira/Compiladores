@@ -1,5 +1,6 @@
 package br.ufscar.dc.compiladores.LA.semantico;
 
+
 import br.ufscar.dc.compiladores.LA.semantico.TabelaDeSimbolos.TipoLA;
 
 public class LASemantico extends LABaseVisitor<Void> {
@@ -18,7 +19,7 @@ public class LASemantico extends LABaseVisitor<Void> {
 
             // Verifica se o identificador da variável já havia sido declarado
             if (currentScope.existe(variableIdentifier)) {
-                LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
+                LASemanticoUtils.addSemanticoErro(ctxIdentVariable.IDENT(0).getSymbol(),
                         "identificador " + variableIdentifier + " ja declarado anteriormente\n");
             } else {
                 var varTipo = ctx.variavel().tipo().getText();
@@ -46,14 +47,14 @@ public class LASemantico extends LABaseVisitor<Void> {
                             varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
                             // Verifica se o tipo já foi declarado antes
                             if (currentScope.existe(variableIdentifier)) {
-                                LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
+                                LASemanticoUtils.addSemanticoErro(ctxIdentVariable.IDENT(0).getSymbol(),
                                         "identificador " + variableIdentifier + " ja declarado anteriormente\n");
                             }
                         }
 
                         // Se o tipo não foi declarado, retorna um erro semântico
                         if(!currentScope.existe(varTipo)){
-                            LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
+                            LASemanticoUtils.addSemanticoErro(ctxIdentVariable.IDENT(0).getSymbol(),
                             "tipo " + varTipo + " nao declarado\n");
                             currentScope.adicionar(variableIdentifier,
                                         TabelaDeSimbolos.EstruturaLA.VARIAVEL,
@@ -69,8 +70,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     }
 
     @Override
-    public Void visitCmd(LAParser.CmdContext ctx) {
-        // Lógica para a regra "cmd", ou seja, o tratamento das ações a serem realizadas quando um comando é encontrado na análise do código.
+    public Void visitarCmd(LAParser.CmdContext ctx) {
         if (ctx.cmdLeia() != null) {
             // Obtém o escopo atual
             var currentScope = escopos.obterEscopoAtual();
@@ -90,24 +90,40 @@ public class LASemantico extends LABaseVisitor<Void> {
                     ctx.cmdAtribuicao().expressao());
             var atribuition = ctx.cmdAtribuicao().getText().split("<-");
             if (!LASemanticoUtils.verificarTipo(leftValue, rightValue) && !atribuition[0].contains("^")) {
-                // Esse erro informa que a atribuição não é compatível para o identificador presente na atribuição.
-                LASemanticoUtils.adicionarErroSemantico(ctx.cmdAtribuicao().identificador().IDENT(0).getSymbol(),
+                // Avisa o identificador caso a atribuição não for compátivel
+                LASemanticoUtils.addSemanticoErro(ctx.cmdAtribuicao().identificador().IDENT(0).getSymbol(),
                         "atribuicao nao compativel para " + ctx.cmdAtribuicao().identificador().getText() + "\n");
             }
             
         }
 
-        // Permite que a visita aos nós filhos da regra "cmd" seja continuada.
-        return super.visitCmd(ctx);
+        // Continua a visita aos nós filhos da regra "cmd".
+        return super.visitarCmd(ctx);
     }
 
     @Override
-    public Void visitExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
-        // Lógica para a regra "exp_aritmetica"
+    public Void visitarExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
+        // Lógica para a regra "Exp_aritmetica"
         var currentScope = escopos.obterEscopoAtual();
-        LASemanticoUtils.verificarTipo(currentScope, ctx);
+        LASemanticUtils.verificarTipo(currentScope, ctx);
 
-        return super.visitExp_aritmetica(ctx);
+        return super.visitarExp_aritmetica(ctx);
     }
     
-}
+    //  É necessário verificar que o nome da constante seja único ao fazer sua declaração.
+    @Override
+    public Object visitDeclaracao_constante(Declaracao_constanteContext ctx) {
+        TabelaDeSimbolos escopoAtual = escopos.getEscopo();
+        if (escopoAtual.existe(ctx.IDENT().getText())) {
+            SemanticoUtils.adicionarErroSemantico(ctx.start, "constante" + ctx.IDENT().getText()
+                    + " ja declarado anteriormente");
+        } else {
+            TabelaDeSimbolos.Tipos tipo = TabelaDeSimbolos.Tipos.INT;
+            TabelaDeSimbolos.Tipos aux = SemanticoUtils.getTipo(ctx.tipo_basico().getText()) ;
+            if(aux != null)
+                tipo = aux;
+            escopoAtual.insert(ctx.IDENT().getText(), tipo, TabelaDeSimbolos.Structure.CONST);
+        }
+
+        return super.visitDeclaracao_constante(ctx);
+    }
