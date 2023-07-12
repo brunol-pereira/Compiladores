@@ -16,17 +16,14 @@ public class LASemantico extends LABaseVisitor<Void> {
                 variableIdentifier += ident.getText();
             var currentScope = escopos.obterEscopoAtual();
 
-            // Verifica se o identificador da variável já foi declarado anteriormente.
+            // Verifica se o identificador da variável já havia sido declarado
             if (currentScope.existe(variableIdentifier)) {
                 LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                         "identificador " + variableIdentifier + " ja declarado anteriormente\n");
             } else {
                 var varTipo = ctx.variavel().tipo().getText();
-                // Switch-case para tratar os diferentes tipos de variáveis.
                 switch (varTipo) {
-                    // Se o tipo for "inteiro", "literal", "real" ou "lógico", a variável é 
-                    // adicionada ao escopo atual com o tipo correspondente utilizando a 
-                    // função adicionar da classe currentScope.
+                    // Se a variável for de um dos tipos abaixo ela é adicionada ao escopo atual
                     case "inteiro":
                         currentScope.adicionar(variableIdentifier,
                                 TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.INTEIRO);
@@ -44,21 +41,20 @@ public class LASemantico extends LABaseVisitor<Void> {
                                 TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.LOGICO);
                         break;
                     default: 
-                        // Caso o tipo não seja um tipo básico
+                        // Para verificar se é de outro tipo
                         if (currentScope.existe(varTipo) && currentScope.verificar(
-                            // Verificamos se o tipo já foi declarado anteriormente no escopo atual e se é um tipo válido.
                             varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
+                            // Verifica se o tipo já foi declarado antes
                             if (currentScope.existe(variableIdentifier)) {
                                 LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                                         "identificador " + variableIdentifier + " ja declarado anteriormente\n");
                             }
                         }
 
-                        //Se o tipo não foi declarado, um erro semântico é adicionado informando que o tipo não foi declarado
+                        // Se o tipo não foi declarado, retorna um erro semântico
                         if(!currentScope.existe(varTipo)){
                             LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                             "tipo " + varTipo + " nao declarado\n");
-                            // A variável é adicionada ao escopo atual com um tipo inválido (INVALIDO).
                             currentScope.adicionar(variableIdentifier,
                                         TabelaDeSimbolos.EstruturaLA.VARIAVEL,
                                         TabelaDeSimbolos.TipoLA.INVALIDO);
@@ -76,12 +72,12 @@ public class LASemantico extends LABaseVisitor<Void> {
     public Void visitCmd(LAParser.CmdContext ctx) {
         // Lógica para a regra "cmd", ou seja, o tratamento das ações a serem realizadas quando um comando é encontrado na análise do código.
         if (ctx.cmdLeia() != null) {
-            // Obtemos o escopo atual através da variável currentScope 
+            // Obtém o escopo atual
             var currentScope = escopos.obterEscopoAtual();
 
-            // Iteramos sobre os identificadores presentes no comando 
+            // Passa por todos identificadores
             for (var ident : ctx.cmdLeia().identificador()) {
-                // Verificação semântica do tipo do identificador
+                // Verificação o tipo do identificador
                 LASemanticoUtils.verificarTipo(currentScope, ident);
             }
         }
@@ -92,7 +88,6 @@ public class LASemantico extends LABaseVisitor<Void> {
                     ctx.cmdAtribuicao().identificador());
             var rightValue = LASemanticoUtils.verificarTipo(currentScope,
                     ctx.cmdAtribuicao().expressao());
-            // Verifica atribuição para ponteiros
             var atribuition = ctx.cmdAtribuicao().getText().split("<-");
             if (!LASemanticoUtils.verificarTipo(leftValue, rightValue) && !atribuition[0].contains("^")) {
                 // Esse erro informa que a atribuição não é compatível para o identificador presente na atribuição.
