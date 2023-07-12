@@ -3,11 +3,11 @@ package br.ufscar.dc.compiladores.LA.semantico;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Escopo {
+public class Escopos {
 
     private LinkedList<TabelaDeSimbolos> pilhaDeTabelas;
 
-    public Escopo() {
+    public Escopos() {
         pilhaDeTabelas = new LinkedList<>();
         criarNovoEscopo();
     }
@@ -21,7 +21,7 @@ public class Escopo {
         return pilhaDeTabelas.peek();
     }
 
-    public List<TabelaDeSimbolos> percorrerEscopoAninhados() {
+    public List<TabelaDeSimbolos> percorrerEscoposAninhados() {
         return pilhaDeTabelas;
     }
 

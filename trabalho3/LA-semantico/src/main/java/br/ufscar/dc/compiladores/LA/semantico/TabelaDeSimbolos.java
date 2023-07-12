@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class TabelaDeSimbolos {
 
+    public Table.Tipos returnType;
     public enum TipoLA {
         INTEIRO,
         REAL,
@@ -23,16 +24,22 @@ public class TabelaDeSimbolos {
     } 
 
     class EntradaTabelaDeSimbolos {
-        public String nome;
-        public TipoLA varTipo;
-        public EstruturaLA estrutura;
+        String nome;
+        TipoLA varTipo;
+        EstruturaLA estrutura;
+
+        public EntradaTabelaDeSimbolos(String nome, EstruturaLA estrutura,TipoLA varTipo){
+            this.nome = nome;
+            this.varTipo = varTipo;
+            this.estrutura = estrutura;
+        }
     }
 
     private HashMap<String, EntradaTabelaDeSimbolos> tabelaDeSimbolos;
     private TabelaDeSimbolos global;
 
     public TabelaDeSimbolos() {
-        this.tabelaDeSimbolos = new HashMap<>();
+        this.TabelaDeSimbolos = new HashMap<>();
         this.global = null;
     }
     
@@ -51,7 +58,7 @@ public class TabelaDeSimbolos {
     }
     
     public boolean existe(String nome) {
-        if(global == null){
+        if(global = null){
             return tabelaDeSimbolos.containsKey(nome);
         }else {
             return tabelaDeSimbolos.containsKey(nome) || global.existe(nome);
@@ -59,11 +66,11 @@ public class TabelaDeSimbolos {
     }
     
     public EntradaTabelaDeSimbolos verificar(String nome) {
-        if(global == null){
+        if(global = null){
             return tabelaDeSimbolos.get(nome);
         }else{
             if(tabelaDeSimbolos.containsKey(nome)){
-                return tabelaDeSimbolos.get(nome);
+                return tabelaDeSimbolos.get(name);
             }else{
                 return global.verificar(nome);
             }
