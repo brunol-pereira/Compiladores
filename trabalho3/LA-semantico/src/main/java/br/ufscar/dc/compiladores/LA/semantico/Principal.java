@@ -95,7 +95,16 @@ public class Principal {
         LASemantico as = new LASemantico();
 
         as.visitPrograma(arvore);
-        LASemanticoUtils.errosSemanticos.forEach((s) -> pw.println(s));
+        //LASemanticoUtils.errosSemanticos.forEach((s) -> pw.println(s));
+
+        if(!LASemanticoUtils.errosSemanticos.isEmpty()){
+
+            //Percorre os erros semânticos e os imprime no arquivo
+            for(var s: LASemanticoUtils.errosSemanticos){
+                pw.write(s);
+            }
+            pw.write("Fim da compilacao\n");
+        }
         
         pw.println("Fim da compilacao");
         pw.close();

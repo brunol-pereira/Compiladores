@@ -73,7 +73,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     }
 
     @Override
-    public Void visitarCmd(LAParser.CmdContext ctx) {
+    public Void visitCmd(LAParser.CmdContext ctx) {
         // Lógica para a regra "cmd", ou seja, o tratamento das ações a serem realizadas quando um comando é encontrado na análise do código.
         if (ctx.cmdLeia() != null) {
             // Obtemos o escopo atual através da variável currentScope 
@@ -103,16 +103,16 @@ public class LASemantico extends LABaseVisitor<Void> {
         }
 
         // Permite que a visita aos nós filhos da regra "cmd" seja continuada.
-        return super.visitarCmd(ctx);
+        return super.visitCmd(ctx);
     }
 
     @Override
-    public Void visitarExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
+    public Void visitExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
         // Lógica para a regra "exp_aritmetica"
         var currentScope = escopos.obterEscopoAtual();
         LASemanticoUtils.verificarTipo(currentScope, ctx);
 
-        return super.visitarExp_aritmetica(ctx);
+        return super.visitExp_aritmetica(ctx);
     }
     
     // @Override
