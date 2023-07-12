@@ -1,5 +1,6 @@
 package br.ufscar.dc.compiladores.LA.semantico;
 
+import br.ufscar.dc.compiladores.LA.semantico.LAParser.ProgramaContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -74,8 +75,8 @@ public class Principal {
             LAParser parser = new LAParser(tokens);
     
             // Adicionando nosso ErrorListener customizado
-            parser.removeErrorListeners();
             MyCustomErrorListener mcel = new MyCustomErrorListener(pw);
+            parser.removeErrorListeners();
             parser.addErrorListener(mcel);
     
             parser.programa();
@@ -86,17 +87,27 @@ public class Principal {
         cs = CharStreams.fromFileName(args[0]);
         lex = new LALexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lex);
-
         LAParser parser = new LAParser(tokens);
-        parser.removeErrorListeners();
-        ProgramaContext arvore = parser.programa();
 
+        parser.removeErrorListeners();
+        
+        ProgramaContext arvore = parser.programa();
         LASemantico as = new LASemantico();
+
         as.visitPrograma(arvore);
-        LASemanticoUtils.errosSemanticos.forEach((s) -> writer.println(s));
+        //LASemanticoUtils.errosSemanticos.forEach((s) -> pw.println(s));
+
+        if(!LASemanticoUtils.errosSemanticos.isEmpty()){
+
+            //Percorre os erros semânticos e os imprime no arquivo
+            for(var s: LASemanticoUtils.errosSemanticos){
+                pw.write(s);
+            }
+            pw.write("Fim da compilacao\n");
+        }
         
         pw.println("Fim da compilacao");
         pw.close();
+
     }
 }
-

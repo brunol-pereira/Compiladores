@@ -1,5 +1,4 @@
-
-package br.ufscar.dc.compiladores.alguma.sintatico;
+package br.ufscar.dc.compiladores.LA.semantico;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
