@@ -8,10 +8,8 @@ public class LASemanticoUtils {
     public static List<String> errosSemanticos = new ArrayList<>();
     
     public static void adicionarErroSemantico(Token t, String mensagem) {
-        // Obtém o número da linha do token onde ocorreu o erro
         int linha = t.getLine();
         //int coluna = t.getCharPositionInLine();
-        // Adiciona o erro à lista de erros semânticos
         errosSemanticos.add(String.format("Erro %d: %s", linha, mensagem));
     }
 
@@ -235,4 +233,5 @@ public class LASemanticoUtils {
         }
         return ret;
     }
+    
 }
