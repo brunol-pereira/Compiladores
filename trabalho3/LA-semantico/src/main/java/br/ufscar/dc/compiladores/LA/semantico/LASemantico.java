@@ -1,6 +1,5 @@
 package br.ufscar.dc.compiladores.LA.semantico;
 
-
 import br.ufscar.dc.compiladores.LA.semantico.TabelaDeSimbolos.TipoLA;
 
 public class LASemantico extends LABaseVisitor<Void> {
@@ -111,7 +110,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     public Void visitarExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
         // Lógica para a regra "exp_aritmetica"
         var currentScope = escopos.obterEscopoAtual();
-        LASemanticUtils.verificarTipo(currentScope, ctx);
+        LASemanticoUtils.verificarTipo(currentScope, ctx);
 
         return super.visitarExp_aritmetica(ctx);
     }

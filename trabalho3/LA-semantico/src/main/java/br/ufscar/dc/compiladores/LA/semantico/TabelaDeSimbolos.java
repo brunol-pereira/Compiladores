@@ -23,22 +23,16 @@ public class TabelaDeSimbolos {
     } 
 
     class EntradaTabelaDeSimbolos {
-        String nome;
-        TipoLA varTipo;
-        EstruturaLA estrutura;
-
-        public EntradaTabelaDeSimbolos(String nome, EstruturaLA estrutura,TipoLA varTipo){
-            this.nome = nome;
-            this.varTipo = varTipo;
-            this.estrutura = estrutura;
-        }
+        public String nome;
+        public TipoLA varTipo;
+        public EstruturaLA estrutura;
     }
 
     private HashMap<String, EntradaTabelaDeSimbolos> tabelaDeSimbolos;
     private TabelaDeSimbolos global;
 
     public TabelaDeSimbolos() {
-        this.TabelaDeSimbolos = new HashMap<>();
+        this.tabelaDeSimbolos = new HashMap<>();
         this.global = null;
     }
     
@@ -57,7 +51,7 @@ public class TabelaDeSimbolos {
     }
     
     public boolean existe(String nome) {
-        if(global = null){
+        if(global == null){
             return tabelaDeSimbolos.containsKey(nome);
         }else {
             return tabelaDeSimbolos.containsKey(nome) || global.existe(nome);
@@ -65,11 +59,11 @@ public class TabelaDeSimbolos {
     }
     
     public EntradaTabelaDeSimbolos verificar(String nome) {
-        if(global = null){
+        if(global == null){
             return tabelaDeSimbolos.get(nome);
         }else{
             if(tabelaDeSimbolos.containsKey(nome)){
-                return tabelaDeSimbolos.get(name);
+                return tabelaDeSimbolos.get(nome);
             }else{
                 return global.verificar(nome);
             }

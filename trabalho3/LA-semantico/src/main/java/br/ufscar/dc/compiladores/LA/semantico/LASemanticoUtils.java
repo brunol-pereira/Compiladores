@@ -21,7 +21,7 @@ public class LASemanticoUtils {
             adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador " + identifier + " nao declarado\n");
         }
         else{
-            EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(identifier);
+            TabelaDeSimbolos.EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(identifier);
             if (ident.varTipo == TabelaDeSimbolos.TipoLA.INTEIRO)
                 return TabelaDeSimbolos.TipoLA.INTEIRO;
             if (ident.varTipo == TabelaDeSimbolos.TipoLA.LITERAL)
