@@ -11,6 +11,8 @@ public class LASemantico extends LABaseVisitor<Void> {
     @Override
     public Void visitDeclaracao_local(LAParser.Declaracao_localContext ctx) {
         // Lógica para a regra "declaracao_local"
+
+        // Itera sobre cada identificador na regra "variavel"
         for (var ctxIdentVariable : ctx.variavel().identificador()) {
             var variableIdentifier = "";
             for (var ident : ctxIdentVariable.IDENT())
@@ -111,12 +113,12 @@ public class LASemantico extends LABaseVisitor<Void> {
     public Void visitarExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
         // Lógica para a regra "exp_aritmetica"
         var currentScope = escopos.obterEscopoAtual();
-        LASemanticUtils.verificarTipo(currentScope, ctx);
+        LASemanticoUtils.verificarTipo(currentScope, ctx);
 
         return super.visitarExp_aritmetica(ctx);
     }
     
-    //ao declarar constante, temos de garantir que o nome dela é novo
+    // Ao declarar constante, temos de garantir que o nome dela é novo
     @Override
     public Object visitDeclaracao_constante(Declaracao_constanteContext ctx) {
         TabelaDeSimbolos escopoAtual = escopos.getEscopo();
