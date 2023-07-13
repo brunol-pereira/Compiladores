@@ -1,4 +1,4 @@
-package br.ufscar.dc.compiladores.LA.semantico;
+package br.ufscar.dc.compiladores.la.semantico;
 
 import java.util.LinkedList;
 import java.util.List;

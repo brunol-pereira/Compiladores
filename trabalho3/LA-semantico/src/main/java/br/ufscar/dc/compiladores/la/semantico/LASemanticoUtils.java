@@ -1,4 +1,4 @@
-package br.ufscar.dc.compiladores.LA.semantico;
+package br.ufscar.dc.compiladores.la.semantico;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class LASemanticoUtils {
     public static void adicionarErroSemantico(Token t, String mensagem) {
         int linha = t.getLine();
         //int coluna = t.getCharPositionInLine();
-        errosSemanticos.add(String.format("Erro %d: %s", linha, mensagem));
+        errosSemanticos.add(String.format("Linha %d: %s", linha, mensagem));
     }
 
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,

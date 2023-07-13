@@ -1,6 +1,6 @@
-package br.ufscar.dc.compiladores.LA.semantico;
+package br.ufscar.dc.compiladores.la.semantico;
 
-import br.ufscar.dc.compiladores.LA.semantico.TabelaDeSimbolos.TipoLA;
+import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.TipoLA;
 
 public class LASemantico extends LABaseVisitor<Void> {
 

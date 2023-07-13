@@ -1,6 +1,6 @@
-package br.ufscar.dc.compiladores.LA.semantico;
+package br.ufscar.dc.compiladores.la.semantico;
 
-import br.ufscar.dc.compiladores.LA.semantico.LAParser.ProgramaContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.ProgramaContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -106,7 +106,6 @@ public class Principal {
             pw.write("Fim da compilacao\n");
         }
         
-        pw.println("Fim da compilacao");
         pw.close();
 
     }
