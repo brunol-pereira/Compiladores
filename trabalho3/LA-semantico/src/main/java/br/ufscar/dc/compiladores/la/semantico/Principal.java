@@ -16,13 +16,13 @@ public class Principal {
 
         PrintWriter pw = null;
 
-        // Altera a saída do programa de acordo com a quantidade de argumentos
+        // Verificando o número de argumentos fornecidos
         if (args.length == 1) {
-            //Um argumento
+            // Se houver um argumento, utiliza a saída padrão para impressão
             pw = new PrintWriter(System.out);
             pw.println();
         } else if (args.length == 2) {
-            //Dois argumentos
+            // Se houver dois argumentos, tenta abrir o arquivo fornecido como segundo argumento
             try {
                 pw = new PrintWriter(new File(args[1]));
             } catch (Exception e) {
@@ -30,12 +30,14 @@ public class Principal {
                 e.printStackTrace();
             }
         } else {
-            return; //Finaliza o programa
+            // Caso contrário, retorna sem fazer nada
+            return;
         }
 
 
-        //Depurar léxico
+        // Depurar léxico
         
+        // Carregar o arquivo de entrada
         CharStream cs = CharStreams.fromFileName(args[0]);
         LALexer lex = new LALexer(cs);
         boolean lexError = false;
@@ -44,20 +46,22 @@ public class Principal {
         while ((t = lex.nextToken()).getType() != Token.EOF) {
             String nomeToken = LALexer.VOCABULARY.getDisplayName(t.getType());
             
-            // Mensagem de erro para qualquer simbolo não identificado. 
+            // Verificando se há erros léxicos
+            // Mensagem de erro para qualquer simbolo não identificado.
+ 
             // ERRO comentário não fechado
             if(nomeToken.equals("COMENTARIO_NAO_FECHADO")) {
                 pw.println("Linha "+t.getLine()+": comentario nao fechado");
                 lexError = true;
                 break;
             }
-            // ERRO cadeia não fechada
+            // Erro para "cadeia não fechada"
             else if(nomeToken.equals("CADEIA_NAO_FECHADA")) {
                 pw.println("Linha "+t.getLine()+": cadeia literal nao fechada");
                 lexError = true;
                 break;
             }
-            // ERRO - simbolo não identificado 
+            // Erro para "simbolo não identificado" 
             else if(nomeToken.equals("ERRO")) {
                 pw.println("Linha "+t.getLine()+": "+t.getText()+" - simbolo nao identificado");
                 lexError = true;
@@ -66,40 +70,46 @@ public class Principal {
             
         }
 
-        //Depurar sintático
-
+        // Se não houver erros léxicos, prossegue com a análise sintática e semântica
+        
+        // Depurar sintático
         if (lexError == false) {
             lex.reset();
     
             CommonTokenStream tokens = new CommonTokenStream(lex);
             LAParser parser = new LAParser(tokens);
     
-            // Adicionando nosso ErrorListener customizado
+            // Configurando nosso ErrorListener customizado
             MyCustomErrorListener mcel = new MyCustomErrorListener(pw);
             parser.removeErrorListeners();
             parser.addErrorListener(mcel);
-    
+
+            // Realizar a análise sintática
             parser.programa();
         }
 
-        //Depurar semântico
-
+        // Depurar semântico
+        
+        // Realizar a análise semântica
         cs = CharStreams.fromFileName(args[0]);
         lex = new LALexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lex);
         LAParser parser = new LAParser(tokens);
 
         parser.removeErrorListeners();
-        
+
+        // Obtendo a árvore sintática
         ProgramaContext arvore = parser.programa();
         LASemantico as = new LASemantico();
 
+        // Realiza a visita semântica
         as.visitPrograma(arvore);
         //LASemanticoUtils.errosSemanticos.forEach((s) -> pw.println(s));
 
+        // Verificar se há erros semânticos
         if(!LASemanticoUtils.errosSemanticos.isEmpty()){
 
-            //Percorre os erros semânticos e os imprime no arquivo
+            // Imprimir os erros semânticos no arquivo
             for(var s: LASemanticoUtils.errosSemanticos){
                 pw.write(s);
             }
