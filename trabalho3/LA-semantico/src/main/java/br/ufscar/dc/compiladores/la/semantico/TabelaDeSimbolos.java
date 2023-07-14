@@ -71,6 +71,5 @@ public class TabelaDeSimbolos {
                 return global.verificar(nome);
             }
         }
-        // return tabela.get(nome).tipo;
     }
 }
