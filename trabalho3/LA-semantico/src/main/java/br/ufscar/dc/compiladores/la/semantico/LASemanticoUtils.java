@@ -6,13 +6,15 @@ import org.antlr.v4.runtime.Token;
 
 public class LASemanticoUtils {
     public static List<String> errosSemanticos = new ArrayList<>();
-    
+
+    //Adiciona um erro semântico à lista de erros
     public static void adicionarErroSemantico(Token t, String mensagem) {
         int linha = t.getLine();
         //int coluna = t.getCharPositionInLine();
         errosSemanticos.add(String.format("Linha %d: %s", linha, mensagem));
     }
 
+    //Verifica o tipo de um identificador em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.IdentificadorContext ctx) {
         var identifier = ctx.getText();
@@ -35,7 +37,7 @@ public class LASemanticoUtils {
         return TabelaDeSimbolos.TipoLA.NAO_DECLARADO;
     }
 
-    // Verifica o tipo em contexto de expressão
+    //Verifica o tipo de uma expressão em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.ExpressaoContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
@@ -51,7 +53,7 @@ public class LASemanticoUtils {
         return ret;
     }
 
-    // Verifica o tipo em contexto de termo lógico
+    //Verifica o tipo de um termo lógico em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos, LAParser.Termo_logicoContext ctx){
         TabelaDeSimbolos.TipoLA ret = null;
         for (var fL : ctx.fator_logico()){
@@ -66,13 +68,13 @@ public class LASemanticoUtils {
         return ret;
     }
 
-    // Verifica o tipo em contexto de fator lógico
+    // Verifica o tipo de um fator lógico em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.Fator_logicoContext ctx) {
         return verificarTipo(tabelaDeSimbolos, ctx.parcela_logica());
     }
 
-    // Verifica o tipo em contexto de parcela lógica
+    // Verifica o tipo de uma parcela lógica em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.Parcela_logicaContext ctx) {
         if (ctx.exp_relacional() != null) {
@@ -82,7 +84,7 @@ public class LASemanticoUtils {
         }
     }
 
-    // Verifica o tipo em contexto de expressão relacional
+    // Verifica o tipo de uma expressão relacional em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.Exp_relacionalContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
@@ -105,7 +107,7 @@ public class LASemanticoUtils {
         return ret;
     }
 
-    // Verifica o tipo em contexto de expressão aritmética
+    // Verifica o tipo de uma expressão aritmética em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.Exp_aritmeticaContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
@@ -121,7 +123,7 @@ public class LASemanticoUtils {
         return ret;
     }
 
-    // Verifica o tipo em contexto de termo
+    // Verifica o tipo de um termo em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.TermoContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
@@ -137,7 +139,7 @@ public class LASemanticoUtils {
         return ret;
     }
 
-    // Verifica o tipo em contexto de fator
+    // Verifica o tipo de um fator em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.FatorContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
@@ -154,7 +156,7 @@ public class LASemanticoUtils {
         return ret;
     }
 
-    // Verifica o tipo em contexto de parcela
+    // Verifica o tipo de uma parcela em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.ParcelaContext ctx) {
 
@@ -165,7 +167,7 @@ public class LASemanticoUtils {
         }
     }
 
-    // Verifica o tipo em contexto de parcela unária
+    // Verifica o tipo de uma parcela unária em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.Parcela_unarioContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
@@ -223,7 +225,7 @@ public class LASemanticoUtils {
         return true;
     }
 
-    // Verifica o tipo em contexto de parcela não unária
+    // Verifica o tipo de uma parcela não unária em um contexto específico
     public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
             LAParser.Parcela_nao_unarioContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
