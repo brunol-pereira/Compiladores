@@ -104,7 +104,6 @@ public class Principal {
 
         // Realiza a visita semântica
         as.visitPrograma(arvore);
-        //LASemanticoUtils.errosSemanticos.forEach((s) -> pw.println(s));
 
         // Verificar se há erros semânticos
         if(!LASemanticoUtils.errosSemanticos.isEmpty()){
