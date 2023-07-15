@@ -9,16 +9,19 @@ public class LASemantico extends LABaseVisitor<Void> {
 
     @Override
     public Void visitDeclaracao_local(LAParser.Declaracao_localContext ctx) {
-        // Lógica para a regra "declaracao_local"
         for (var ctxIdentVariable : ctx.variavel().identificador()) {
             var varIdent = "";
+            var varIdent = "";
             for (var ident : ctxIdentVariable.IDENT())
+                varIdent += ident.getText();
+            var escopoAtual = escopos.obterEscopoAtual();
                 varIdent += ident.getText();
             var escopoAtual = escopos.obterEscopoAtual();
 
             // Verifica se o identificador da variável já foi declarado anteriormente.
             if (escopoAtual.existe(varIdent)) {
                 LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
+                        "identificador " + varIdent + " ja declarado anteriormente\n");
                         "identificador " + varIdent + " ja declarado anteriormente\n");
             } else {
                 var varTipo = ctx.variavel().tipo().getText();
@@ -57,13 +60,12 @@ public class LASemantico extends LABaseVisitor<Void> {
 
     @Override
     public Void visitCmd(LAParser.CmdContext ctx) {
-        // Lógica para a regra "cmd", ou seja, o tratamento das ações a serem realizadas quando um comando é encontrado na análise do código.
         if (ctx.cmdLeia() != null) {
-            // Obtemos o escopo atual através da variável escopoAtual 
             var escopoAtual = escopos.obterEscopoAtual();
 
             // Iteramos sobre os identificadores presentes no comando 
             for (var ident : ctx.cmdLeia().identificador()) {
+                LASemanticoUtils.verificarTipo(escopoAtual, ident);
                 // Verificação semântica do tipo do identificador
                 LASemanticoUtils.verificarTipo(escopoAtual, ident);
             }
@@ -72,25 +74,27 @@ public class LASemantico extends LABaseVisitor<Void> {
         if (ctx.cmdAtribuicao() != null) {
             var escopoAtual = escopos.obterEscopoAtual();
             var leftValue = LASemanticoUtils.verificarTipo(escopoAtual,
+            var escopoAtual = escopos.obterEscopoAtual();
+            var leftValue = LASemanticoUtils.verificarTipo(escopoAtual,
                     ctx.cmdAtribuicao().identificador());
             var rightValue = LASemanticoUtils.verificarTipo(escopoAtual,
+            var rightValue = LASemanticoUtils.verificarTipo(escopoAtual,
                     ctx.cmdAtribuicao().expressao());
-            // Verifica atribuição para ponteiros
             var atribuition = ctx.cmdAtribuicao().getText().split("<-");
             if (!LASemanticoUtils.verificarTipo(leftValue, rightValue) && !atribuition[0].contains("^")) {
-                // Esse erro informa que a atribuição não é compatível para o identificador presente na atribuição.
                 LASemanticoUtils.adicionarErroSemantico(ctx.cmdAtribuicao().identificador().IDENT(0).getSymbol(),
                         "atribuicao nao compativel para " + ctx.cmdAtribuicao().identificador().getText() + "\n");
             }
             
         }
 
-        // Permite que a visita aos nós filhos da regra "cmd" seja continuada.
         return super.visitCmd(ctx);
     }
 
     @Override
     public Void visitExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
+        var escopoAtual = escopos.obterEscopoAtual();
+        LASemanticoUtils.verificarTipo(escopoAtual, ctx);
         // Lógica para a regra "exp_aritmetica"
         var escopoAtual = escopos.obterEscopoAtual();
         LASemanticoUtils.verificarTipo(escopoAtual, ctx);

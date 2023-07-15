@@ -35,11 +35,13 @@ public class TabelaDeSimbolos {
         this.tabelaDeSimbolos = new HashMap<>();
         this.global = null;
     }
-    
+
+    // Define a tabela de símbolos global
     void setGlobal(TabelaDeSimbolos global){
         this.global = global;
     }
-    
+
+    // Adiciona uma entrada à tabela de símbolos
     public void adicionar(String nome, EstruturaLA estrutura,TipoLA varTipo ) {
 
         EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
@@ -49,7 +51,8 @@ public class TabelaDeSimbolos {
 
         tabelaDeSimbolos.put(nome, tabela);
     }
-    
+
+    // Verifica se um símbolo existe na tabela de símbolos
     public boolean existe(String nome) {
         if(global == null){
             return tabelaDeSimbolos.containsKey(nome);
@@ -57,7 +60,7 @@ public class TabelaDeSimbolos {
             return tabelaDeSimbolos.containsKey(nome) || global.existe(nome);
         }
     }
-    
+    // Verifica uma entrada na tabela de símbolos
     public EntradaTabelaDeSimbolos verificar(String nome) {
         if(global == null){
             return tabelaDeSimbolos.get(nome);
@@ -68,6 +71,5 @@ public class TabelaDeSimbolos {
                 return global.verificar(nome);
             }
         }
-        // return tabela.get(nome).tipo;
     }
 }
