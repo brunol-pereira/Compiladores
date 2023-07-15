@@ -11,60 +11,43 @@ public class LASemantico extends LABaseVisitor<Void> {
     public Void visitDeclaracao_local(LAParser.Declaracao_localContext ctx) {
         // Lógica para a regra "declaracao_local"
         for (var ctxIdentVariable : ctx.variavel().identificador()) {
-            var variableIdentifier = "";
+            var varIdent = "";
             for (var ident : ctxIdentVariable.IDENT())
-                variableIdentifier += ident.getText();
-            var currentScope = escopos.obterEscopoAtual();
+                varIdent += ident.getText();
+            var escopoAtual = escopos.obterEscopoAtual();
 
             // Verifica se o identificador da variável já foi declarado anteriormente.
-            if (currentScope.existe(variableIdentifier)) {
+            if (escopoAtual.existe(varIdent)) {
                 LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
-                        "identificador " + variableIdentifier + " ja declarado anteriormente\n");
+                        "identificador " + varIdent + " ja declarado anteriormente\n");
             } else {
                 var varTipo = ctx.variavel().tipo().getText();
-                // Switch-case para tratar os diferentes tipos de variáveis.
-                switch (varTipo) {
-                    // Se o tipo for "inteiro", "literal", "real" ou "lógico", a variável é 
-                    // adicionada ao escopo atual com o tipo correspondente utilizando a 
-                    // função adicionar da classe currentScope.
-                    case "inteiro":
-                        currentScope.adicionar(variableIdentifier,
-                                TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.INTEIRO);
-                        break;
-                    case "literal":
-                        currentScope.adicionar(variableIdentifier,
-                                TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.LITERAL);
-                        break;
-                    case "real":
-                        currentScope.adicionar(variableIdentifier,
-                                TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.REAL);
-                        break;
-                    case "logico":
-                        currentScope.adicionar(variableIdentifier,
-                                TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.LOGICO);
-                        break;
-                    default: 
-                        // Caso o tipo não seja um tipo básico
-                        if (currentScope.existe(varTipo) && currentScope.verificar(
-                            // Verificamos se o tipo já foi declarado anteriormente no escopo atual e se é um tipo válido.
-                            varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
-                            if (currentScope.existe(variableIdentifier)) {
-                                LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
-                                        "identificador " + variableIdentifier + " ja declarado anteriormente\n");
-                            }
-                        }
-
-                        //Se o tipo não foi declarado, um erro semântico é adicionado informando que o tipo não foi declarado
-                        if(!currentScope.existe(varTipo)){
+                // Tratar os diferentes tipos de variáveis.
+                if (varTipo.equals("inteiro")) {
+                    escopoAtual.adicionar(varIdent, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.INTEIRO);
+                } else if (varTipo.equals("literal")) {
+                    escopoAtual.adicionar(varIdent, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.LITERAL);
+                } else if (varTipo.equals("real")) {
+                    escopoAtual.adicionar(varIdent, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.REAL);
+                } else if (varTipo.equals("logico")) {
+                    escopoAtual.adicionar(varIdent, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.LOGICO);
+                } else {
+                    // Caso o tipo não seja um tipo básico
+                    if (escopoAtual.existe(varTipo) && escopoAtual.verificar(varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
+                        if (escopoAtual.existe(varIdent)) {
                             LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
-                            "tipo " + varTipo + " nao declarado\n");
-                            // A variável é adicionada ao escopo atual com um tipo inválido (INVALIDO).
-                            currentScope.adicionar(variableIdentifier,
-                                        TabelaDeSimbolos.EstruturaLA.VARIAVEL,
-                                        TabelaDeSimbolos.TipoLA.INVALIDO);
+                                    "identificador " + varIdent + " ja declarado anteriormente\n");
                         }
+                    }
 
-                        break;
+                    // Se o tipo não foi declarado, um erro semântico é adicionado informando que o tipo não foi declarado
+                    if (!escopoAtual.existe(varTipo)) {
+                        LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
+                                "tipo " + varTipo + " nao declarado\n");
+                        // A variável é adicionada ao escopo atual com um tipo inválido (INVALIDO).
+                        escopoAtual.adicionar(varIdent, TabelaDeSimbolos.EstruturaLA.VARIAVEL,
+                                TabelaDeSimbolos.TipoLA.INVALIDO);
+                    }
                 }
             }
         }
@@ -76,21 +59,21 @@ public class LASemantico extends LABaseVisitor<Void> {
     public Void visitCmd(LAParser.CmdContext ctx) {
         // Lógica para a regra "cmd", ou seja, o tratamento das ações a serem realizadas quando um comando é encontrado na análise do código.
         if (ctx.cmdLeia() != null) {
-            // Obtemos o escopo atual através da variável currentScope 
-            var currentScope = escopos.obterEscopoAtual();
+            // Obtemos o escopo atual através da variável escopoAtual 
+            var escopoAtual = escopos.obterEscopoAtual();
 
             // Iteramos sobre os identificadores presentes no comando 
             for (var ident : ctx.cmdLeia().identificador()) {
                 // Verificação semântica do tipo do identificador
-                LASemanticoUtils.verificarTipo(currentScope, ident);
+                LASemanticoUtils.verificarTipo(escopoAtual, ident);
             }
         }
 
         if (ctx.cmdAtribuicao() != null) {
-            var currentScope = escopos.obterEscopoAtual();
-            var leftValue = LASemanticoUtils.verificarTipo(currentScope,
+            var escopoAtual = escopos.obterEscopoAtual();
+            var leftValue = LASemanticoUtils.verificarTipo(escopoAtual,
                     ctx.cmdAtribuicao().identificador());
-            var rightValue = LASemanticoUtils.verificarTipo(currentScope,
+            var rightValue = LASemanticoUtils.verificarTipo(escopoAtual,
                     ctx.cmdAtribuicao().expressao());
             // Verifica atribuição para ponteiros
             var atribuition = ctx.cmdAtribuicao().getText().split("<-");
@@ -109,8 +92,8 @@ public class LASemantico extends LABaseVisitor<Void> {
     @Override
     public Void visitExp_aritmetica(LAParser.Exp_aritmeticaContext ctx){
         // Lógica para a regra "exp_aritmetica"
-        var currentScope = escopos.obterEscopoAtual();
-        LASemanticoUtils.verificarTipo(currentScope, ctx);
+        var escopoAtual = escopos.obterEscopoAtual();
+        LASemanticoUtils.verificarTipo(escopoAtual, ctx);
 
         return super.visitExp_aritmetica(ctx);
     }
