@@ -11,6 +11,12 @@ public class TabelaDeSimbolos {
         LITERAL,
         LOGICO,
         INVALIDO,
+        PONTEIRO_INTEIRO,
+        PONTEIRO_REAL,
+        PONTEIRO_LOGICO,
+        PONTEIRO_LITERAL,
+        REGISTRO,
+        ENDERECO,
         NAO_DECLARADO
     }
 
@@ -19,13 +25,15 @@ public class TabelaDeSimbolos {
         CONSTANTE,
         TIPO,
         PROCEDIMENTO,
-        FUNCAO
+        FUNCAO,
+        REGISTRO
     } 
 
     class EntradaTabelaDeSimbolos {
         public String nome;
         public TipoLA varTipo;
         public EstruturaLA estrutura;
+        public TabelaDeSimbolos argsRegFunc;
     }
 
     private HashMap<String, EntradaTabelaDeSimbolos> tabelaDeSimbolos;
@@ -50,6 +58,17 @@ public class TabelaDeSimbolos {
         tabela.varTipo = varTipo;
 
         tabelaDeSimbolos.put(nome, tabela);
+    }
+
+    public void put(String nome, TipoLA estrutura, TipoLA varTipo, TabelaDeSimbolos argsRegFunc){
+        EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
+        tabela.nome = nome;
+        tabela.estrutura = estrutura;
+        tabela.varTipo = varTipo;
+        tabela.argsRegFunc = argsRegFunc;
+        tabelaDeSimbolos.put(nome, tabela);
+
+
     }
 
     // Verifica se um símbolo existe na tabela de símbolos
