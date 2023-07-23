@@ -6,16 +6,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import br.ufscar.dc.compiladores.LA.LAParser.CmdAtribuicaoContext;
-import br.ufscar.dc.compiladores.LA.LAParser.CmdChamadaContext;
-import br.ufscar.dc.compiladores.LA.LAParser.CmdContext;
-import br.ufscar.dc.compiladores.LA.LAParser.CmdLeiaContext;
-import br.ufscar.dc.compiladores.LA.LAParser.Decl_local_globalContext;
-import br.ufscar.dc.compiladores.LA.LAParser.Declaracao_globalContext;
-import br.ufscar.dc.compiladores.LA.LAParser.Exp_aritmeticaContext;
-import br.ufscar.dc.compiladores.LA.LAParser.ExpressaoContext;
-import br.ufscar.dc.compiladores.LA.LAParser.IdentificadorContext;
-import br.ufscar.dc.compiladores.LA.LAParser.VariavelContext;
+import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.EntradaTabelaDeSimbolos;
 import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.TipoLA;
 
 // Definição da classe LASemantico
@@ -46,19 +37,19 @@ public class LASemantico extends LABaseVisitor<Void> {
                 break;
             case "^literal":
             tabelaDeSimbolos.adicionar(varIdent,
-            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONT_LITE);
+            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_LITERAL);
                 break;
             case "^logico":
             tabelaDeSimbolos.adicionar(varIdent,
-            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONT_LOGI);
+            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_LOGICO);
                 break;
             case "^real":
             tabelaDeSimbolos.adicionar(varIdent,
-            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONT_REAL);
+            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_REAL);
                 break;
             case "^inteiro":
             tabelaDeSimbolos.adicionar(varIdent,
-            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONT_INTE);
+            TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_INTEIRO);
                 break;
             default:
                 return false; // Caso o tipo seja inválido, retorna falso.
@@ -162,7 +153,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                                             "identificador " + varIdent + " ja declarado anteriormente\n");
                                 }
                                 else{
-                                    SymbolTableEntry entry = escopoAtual.verificar(varTipo);
+                                    EntradaTabelaDeSimbolos entry = escopoAtual.verificar(varTipo);
                                     TabelaDeSimbolos fieldsType = entry.argsRegFunc;
                                     escopoAtual.adicionar(varIdent,
                                             TabelaDeSimbolos.EstruturaLA.REGISTRO, null, fieldsType);
@@ -208,7 +199,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                         TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
 
                         for (String registroidentificador : registroidentificadores) {
-                            SymbolTableEntry entry = escopoAtual.verificar(registroidentificador);
+                            EntradaTabelaDeSimbolos entry = escopoAtual.verificar(registroidentificador);
                             TabelaDeSimbolos registerFields = entry.argsRegFunc;
 
                             if (registerFields.existe(registerFieldName)) {
@@ -282,12 +273,12 @@ public class LASemantico extends LABaseVisitor<Void> {
                             }else{
                                 //Caso não seja um dos tipo_estendido 
                                 if (globalScope.existe(varTipo) && globalScope.verificar(
-                                    varTipo).identificadorType == TabelaDeSimbolos.EstruturaLA.TIPO) {
+                                    varTipo).TipoLA == TabelaDeSimbolos.EstruturaLA.TIPO) {
                                     if (functionScope.existe(parametroIdentificador)) {
                                         LASemanticoUtils.adicionarErroSemantico(ident.IDENT(0).getSymbol(),
                                                 "identificador " + parametroIdentificador + " ja declarado anteriormente\n");
                                     } else {
-                                        SymbolTableEntry fields = globalScope.verificar(varTipo);
+                                        EntradaTabelaDeSimbolos fields = globalScope.verificar(varTipo);
                                         TabelaDeSimbolos nestedTableType = fields.argsRegFunc;
 
                                         functionScope.adicionar(parametroIdentificador,
@@ -353,7 +344,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                                         LASemanticoUtils.adicionarErroSemantico(ident.IDENT(0).getSymbol(),
                                                 "identificador " + parametroIdentificador + " ja declarado anteriormente\n");
                                     } else {
-                                        SymbolTableEntry fields = globalScope.verificar(varTipo);
+                                        EntradaTabelaDeSimbolos fields = globalScope.verificar(varTipo);
                                         TabelaDeSimbolos nestedTableType = fields.argsRegFunc;
 
                                         procScope.adicionar(parametroIdentificador,
@@ -402,7 +393,7 @@ public class LASemantico extends LABaseVisitor<Void> {
             LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
                     "identificador " + identificador + " nao declarado\n");
         } else {
-            SymbolTableEntry funProc = escopoAtual.verificar(identificador);
+            EntradaTabelaDeSimbolos funProc = escopoAtual.verificar(identificador);
             ArrayList<TabelaDeSimbolos.TipoLA> parameterTypes = new ArrayList<>();
             for (ExpressaoContext exp : ctx.expressao()) {
                 parameterTypes.add(LASemanticoUtils.verificarTipo(escopoAtual, exp));
@@ -436,28 +427,28 @@ public class LASemantico extends LABaseVisitor<Void> {
         // Type.verificaring
         if (atribuition[0].contains("^")){
             if (
-                leftValue == TabelaDeSimbolos.TipoLA.PONT_INTE
+                leftValue == TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO
                 && 
                 rightValue != TabelaDeSimbolos.TipoLA.INTEIRO
                 )
                 LASemanticoUtils.adicionarErroSemantico(ctx.identificador().IDENT(0).getSymbol(),
                         "atribuicao nao compativel para " + atribuition[0] + "\n");
             if (
-                leftValue == TabelaDeSimbolos.TipoLA.PONT_LOGI
+                leftValue == TabelaDeSimbolos.TipoLA.PONTEIRO_LOGICO
                 && 
                 rightValue != TabelaDeSimbolos.TipoLA.LOGICO
                 )
                 LASemanticoUtils.adicionarErroSemantico(ctx.identificador().IDENT(0).getSymbol(),
                         "atribuicao nao compativel para " + atribuition[0] + "\n");
             if (
-                leftValue == TabelaDeSimbolos.TipoLA.PONT_REAL
+                leftValue == TabelaDeSimbolos.TipoLA.PONTEIRO_REAL
                 && 
                 rightValue != TabelaDeSimbolos.TipoLA.REAL
                 )
                 LASemanticoUtils.adicionarErroSemantico(ctx.identificador().IDENT(0).getSymbol(),
                         "atribuicao nao compativel para " + atribuition[0] + "\n");
             if (
-                leftValue == TabelaDeSimbolos.TipoLA.PONT_LITE
+                leftValue == TabelaDeSimbolos.TipoLA.PONTEIRO_LITERAL
                 && 
                 rightValue != TabelaDeSimbolos.TipoLA.LITERAL
                 )
