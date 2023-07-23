@@ -9,8 +9,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 
-
-
 public class Principal {
     public static void main(String args[]) throws IOException {
 
@@ -109,7 +107,7 @@ public class Principal {
         if(!LASemanticoUtils.errosSemanticos.isEmpty()){
 
             // Imprimir os erros semânticos no arquivo
-            for(var s: LASemanticoUtils.errosSemanticos){
+            for(String s: LASemanticoUtils.errosSemanticos){
                 pw.write(s);
             }
             pw.write("Fim da compilacao\n");

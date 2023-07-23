@@ -56,7 +56,6 @@ public class TabelaDeSimbolos {
         tabela.nome = nome;
         tabela.estrutura = estrutura;
         tabela.varTipo = varTipo;
-
         tabelaDeSimbolos.put(nome, tabela);
     }
 
@@ -90,5 +89,20 @@ public class TabelaDeSimbolos {
                 return global.verificar(nome);
             }
         }
+    }
+
+    public boolean validar(ArrayList<TabelaDeSimbolos.TipoLA> types){
+        int contador = 0;
+        
+        if(TabelaDeSimbolos.size() != types.size())
+            return false;
+        for(EntradaTabelaDeSimbolos entry: tabelaDeSimbolos.values()){
+            if(types.get(contador) != entry.varTipo){
+                return false;
+            }
+            contador++;
+        }
+        
+        return true;
     }
 }
