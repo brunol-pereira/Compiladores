@@ -3,6 +3,16 @@ package br.ufscar.dc.compiladores.la.semantico;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.Exp_aritmeticaContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.ExpressaoContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.FatorContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.Fator_logicoContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.IdentificadorContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.ParcelaContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.TermoContext;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.Termo_logicoContext;
+import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.TipoLA;
+
 public class LASemanticoUtils {
     public static List<String> errosSemanticos = new ArrayList<>();
 

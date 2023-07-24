@@ -1,6 +1,5 @@
 package br.ufscar.dc.compiladores.la.semantico;
 
-import br.ufscar.dc.compiladores.la.semantico.LAParser.ProgramaContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,6 +7,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
+import br.ufscar.dc.compiladores.la.semantico.LAParser.ProgramaContext;
 
 public class Principal {
     public static void main(String args[]) throws IOException {
