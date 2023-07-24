@@ -1,5 +1,6 @@
 package br.ufscar.dc.compiladores.la.semantico;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,9 +32,10 @@ public class TabelaDeSimbolos {
 
     class EntradaTabelaDeSimbolos {
         public String nome;
-        public TipoLA varTipo;
-        public EstruturaLA estrutura;
+        public TabelaDeSimbolos.TipoLA varTipo;
+        public TabelaDeSimbolos.EstruturaLA estrutura;
         public TabelaDeSimbolos argsRegFunc;
+        public String TipoFuncao;
     }
 
     private HashMap<String, EntradaTabelaDeSimbolos> tabelaDeSimbolos;
@@ -50,12 +52,22 @@ public class TabelaDeSimbolos {
     }
 
     // Adiciona uma entrada à tabela de símbolos
-    public void adicionar(String nome, EstruturaLA estrutura,TipoLA varTipo ) {
+    public void put(String nome, EstruturaLA estrutura,TipoLA varTipo ) {
 
         EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
         tabela.nome = nome;
         tabela.estrutura = estrutura;
         tabela.varTipo = varTipo;
+        tabelaDeSimbolos.put(nome, tabela);
+    }
+
+     public void put(String nome, EstruturaLA estrutura,TipoLA varTipo, TabelaDeSimbolos argsRegFunc) {
+
+        EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
+        tabela.nome = nome;
+        tabela.estrutura = estrutura;
+        tabela.varTipo = varTipo;
+        tabela.argsRegFunc = argsRegFunc;
         tabelaDeSimbolos.put(nome, tabela);
     }
 
@@ -65,9 +77,7 @@ public class TabelaDeSimbolos {
         tabela.estrutura = estrutura;
         tabela.varTipo = varTipo;
         tabela.argsRegFunc = argsRegFunc;
-        tabelaDeSimbolos.put(nome, tabela);
-
-
+        tabela.TipoFuncao = tipofunc;        tabelaDeSimbolos.put(nome, tabela);
     }
 
     // Verifica se um símbolo existe na tabela de símbolos
@@ -105,4 +115,13 @@ public class TabelaDeSimbolos {
         
         return true;
     }
+
+
+//--------------Correção do visual studio---------------------//
+
+    private static int size() {
+        return 0;
+    }
+
+//------------------------------------------------------------//    
 }

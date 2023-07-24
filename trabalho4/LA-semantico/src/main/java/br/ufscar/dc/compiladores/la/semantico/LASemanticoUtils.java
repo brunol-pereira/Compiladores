@@ -11,6 +11,7 @@ import br.ufscar.dc.compiladores.la.semantico.LAParser.IdentificadorContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.ParcelaContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.TermoContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.Termo_logicoContext;
+import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.EntradaTabelaDeSimbolos;
 import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.TipoLA;
 
 public class LASemanticoUtils {
@@ -37,7 +38,7 @@ public class LASemanticoUtils {
             }
 
             else {
-                EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.check(part[0]);
+                EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(part[0]);
                 if (ident.estrutura == TabelaDeSimbolos.TipoLA.REGISTRO && part.length > 1) {
                     TabelaDeSimbolos fields = ident.argsRegFunc;
                     if (!fields.exists(part[1])) {
@@ -45,7 +46,7 @@ public class LASemanticoUtils {
                                 "identificador " + identifier + "nao declarado\n");
                     } else {
 
-                        EntradaTabelaDeSimbolos tabela = fields.check(part[1]);
+                        EntradaTabelaDeSimbolos tabela = fields.verificar(part[1]);
                         if (tabela.varTipo == TabelaDeSimbolos.TipoLA.INTEIRO)
                             return TabelaDeSimbolos.TipoLA.INTEIRO;
                         if (tabela.varTipo == TabelaDeSimbolos.TipoLA.LITERAL)
@@ -285,8 +286,8 @@ public class LASemanticoUtils {
 
             if (tabelaDeSimbolos.exists(ctx.IDENT().getText())) {
                 // return type
-                EntradaTabelaDeSimbolos function = tabelaDeSimbolos.check(ctx.IDENT().getText()); 
-                switch (function.functionType) {
+                EntradaTabelaDeSimbolos function = tabelaDeSimbolos.verificar(ctx.IDENT().getText()); 
+                switch (function.TipoFuncao) {
                     case "inteiro":
                         ret = TabelaDeSimbolos.TipoLA.INTEIRO;
                         break;
@@ -317,7 +318,7 @@ public class LASemanticoUtils {
                 }
 
                 String nameFun = ctx.IDENT().getText();
-                EntradaTabelaDeSimbolos funProc = symbolTable.check(nameFun);
+                EntradaTabelaDeSimbolos funProc = symbolTable.verificar(nameFun);
 
                 ArrayList<TabelaDeSimbolos.TipoLA> parameterTypes = new ArrayList<>();
 
