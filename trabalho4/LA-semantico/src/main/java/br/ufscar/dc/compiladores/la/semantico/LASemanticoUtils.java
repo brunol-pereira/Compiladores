@@ -3,6 +3,7 @@ package br.ufscar.dc.compiladores.la.semantico;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.Exp_aritmeticaContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.ExpressaoContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.FatorContext;
@@ -11,7 +12,6 @@ import br.ufscar.dc.compiladores.la.semantico.LAParser.IdentificadorContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.ParcelaContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.TermoContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.Termo_logicoContext;
-import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.EntradaTabelaDeSimbolos;
 import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.TipoLA;
 
 public class LASemanticoUtils {
@@ -33,7 +33,7 @@ public class LASemanticoUtils {
 
             String[] part = identifier.split("\\.");
 
-            if (!tabelaDeSimbolos.exists(part[0])) {
+            if (!tabelaDeSimbolos.existe(part[0])) {
                 adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador" + identifier + "nao declarado\n");
             }
 
@@ -41,7 +41,7 @@ public class LASemanticoUtils {
                 EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(part[0]);
                 if (ident.estrutura == TabelaDeSimbolos.TipoLA.REGISTRO && part.length > 1) {
                     TabelaDeSimbolos fields = ident.argsRegFunc;
-                    if (!fields.exists(part[1])) {
+                    if (!fields.existe(part[1])) {
                         adicionarErroSemantico(ctx.IDENT(0).getSymbol,
                                 "identificador " + identifier + "nao declarado\n");
                     } else {
@@ -96,13 +96,13 @@ public class LASemanticoUtils {
                 SemDimensao += identificadorCtx.getText();
 
             for (var xp : ctx.dimensao().exp_aritmetica())
-                verificarTipo(TabelaDeSimbolos, xp);
+                verificarTipo(tabelaDeSimbolos, xp);
 
-            if (!tabelaDeSimbolos.exists(SemDimensao)){
+            if (!tabelaDeSimbolos.existe(SemDimensao)){
                 adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador " + SemDimensao + "nao declarado\n");
             }
             else{
-                EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.check(SemDimensao);
+                EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(SemDimensao);
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.INTEIRO)
                     return TabelaDeSimbolos.TipoLA.INTEIRO;
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.LITERAL)
@@ -284,7 +284,7 @@ public class LASemanticoUtils {
                 }
             }
 
-            if (tabelaDeSimbolos.exists(ctx.IDENT().getText())) {
+            if (tabelaDeSimbolos.existe(ctx.IDENT().getText())) {
                 // return type
                 EntradaTabelaDeSimbolos function = tabelaDeSimbolos.verificar(ctx.IDENT().getText()); 
                 switch (function.TipoFuncao) {
@@ -318,16 +318,16 @@ public class LASemanticoUtils {
                 }
 
                 String nameFun = ctx.IDENT().getText();
-                EntradaTabelaDeSimbolos funProc = symbolTable.verificar(nameFun);
+                EntradaTabelaDeSimbolos funProc = tabelaDeSimbolos.verificar(nameFun);
 
                 ArrayList<TabelaDeSimbolos.TipoLA> parameterTypes = new ArrayList<>();
 
                 for (ExpressaoContext exp : ctx.expressao()) {
-                    parameterTypes.add(verifyType(TabelaDeSimbolos, exp));
+                    parameterTypes.add(verificarTipo(tabelaDeSimbolos, exp));
                 }
 
-                if (!funProc.argsRegFunc.validType(parameterTypes)) {
-                    addSemanticError(ctx.IDENT().getSymbol(),
+                if (!funProc.argsRegFunc.validar(parameterTypes)) {
+                    adicionarErroSemantico(ctx.IDENT().getSymbol(),
                             "incompatibilidade de parametros na chamada de " + nameFun + "\n");
                 }
             }
@@ -388,7 +388,7 @@ public class LASemanticoUtils {
     }
 
     // Verifica o tipo de uma parcela não unária em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela,
             LAParser.Parcela_nao_unarioContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
 

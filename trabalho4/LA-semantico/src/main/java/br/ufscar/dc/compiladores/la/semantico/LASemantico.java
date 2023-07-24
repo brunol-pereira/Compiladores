@@ -199,7 +199,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                         TabelaDeSimbolos fields = new TabelaDeSimbolos();
                         escopoAtual.put(identificadorNome, TabelaDeSimbolos.EstruturaLA.REGISTRO, null,
                                 fields);
-                        registeridentificadors.add(identificadorNome);
+                        registroidentificadores.add(identificadorNome);
                     }
                 }
 
@@ -245,15 +245,15 @@ public class LASemantico extends LABaseVisitor<Void> {
         String identificador = ctx.IDENT().getText();
 
         // Geting scopes
-        List<TabelaDeSimbolos> scopes = escopos.runescopos();
+        List<TabelaDeSimbolos> scopes = escopos.percorrerEscopoAninhados();
         if (scopes.size() > 1) {
-            escopos.giveupScope();
+            escopos.obterEscopoAtual();
         }
         TabelaDeSimbolos globalScope = escopos.obterEscopoAtual();
 
         if (ctx.tipo_estendido() != null) {
             // has a type and returns, is a function
-            escopos.createNewScope();
+            escopos.criarNovoEscopo();
             TabelaDeSimbolos functionScope = escopos.obterEscopoAtual();
             functionScope.setGlobal(globalScope); // Add global scope reference to symbolTable
 
@@ -285,7 +285,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                             } else {
                                 // Caso não seja um dos tipo_estendido
                                 if (globalScope.existe(varTipo) && globalScope.verificar(
-                                        varTipo).TipoLA == TabelaDeSimbolos.EstruturaLA.TIPO) {
+                                        varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
                                     if (functionScope.existe(parametroIdentificador)) {
                                         LASemanticoUtils.adicionarErroSemantico(ident.IDENT(0).getSymbol(),
                                                 "identificador " + parametroIdentificador
@@ -323,7 +323,7 @@ public class LASemantico extends LABaseVisitor<Void> {
 
         } else {
             // is a procedure
-            escopos.createNewScope();
+            escopos.criarNovoEscopo();
             TabelaDeSimbolos procScope = escopos.obterEscopoAtual();
             procScope.setGlobal(globalScope); // Add global scope reference to symbolTable
 
@@ -409,7 +409,7 @@ public class LASemantico extends LABaseVisitor<Void> {
             for (ExpressaoContext exp : ctx.expressao()) {
                 parameterTypes.add(LASemanticoUtils.verificarTipo(escopoAtual, exp));
             }
-            if (!funProc.argsRegFunc.validType(parameterTypes)) {
+            if (!funProc.argsRegFunc.validar(parameterTypes)) {
                 LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
                         "incompatibilidade de parametros na chamada de " + identificador + "\n");
             }
@@ -514,9 +514,9 @@ public class LASemantico extends LABaseVisitor<Void> {
     @Override
     public Void visitCorpo(LAParser.CorpoContext ctx) {
         // Lógica para tratamento do corpo do programa
-        List<TabelaDeSimbolos> scopes = escopos.runescopos();
+        List<TabelaDeSimbolos> scopes = escopos.percorrerEscopoAninhados();
         if (scopes.size() > 1) {
-            escopos.giveupScope();
+            escopos.obterEscopoAtual();
         }
 
         return super.visitCorpo(ctx);

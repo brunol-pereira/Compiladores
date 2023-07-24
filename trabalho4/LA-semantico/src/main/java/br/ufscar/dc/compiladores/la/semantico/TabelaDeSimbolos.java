@@ -30,14 +30,6 @@ public class TabelaDeSimbolos {
         REGISTRO
     } 
 
-    class EntradaTabelaDeSimbolos {
-        public String nome;
-        public TabelaDeSimbolos.TipoLA varTipo;
-        public TabelaDeSimbolos.EstruturaLA estrutura;
-        public TabelaDeSimbolos argsRegFunc;
-        public String TipoFuncao;
-    }
-
     private HashMap<String, EntradaTabelaDeSimbolos> tabelaDeSimbolos;
     private TabelaDeSimbolos global;
 
@@ -61,7 +53,7 @@ public class TabelaDeSimbolos {
         tabelaDeSimbolos.put(nome, tabela);
     }
 
-     public void put(String nome, EstruturaLA estrutura,TipoLA varTipo, TabelaDeSimbolos argsRegFunc) {
+     public void put(String nome, EstruturaLA estrutura, TipoLA varTipo, TabelaDeSimbolos argsRegFunc) {
 
         EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
         tabela.nome = nome;
@@ -71,13 +63,15 @@ public class TabelaDeSimbolos {
         tabelaDeSimbolos.put(nome, tabela);
     }
 
-    public void put(String nome, TipoLA estrutura, TipoLA varTipo, TabelaDeSimbolos argsRegFunc){
+     public void put(String nome, EstruturaLA estrutura, TipoLA varTipo, TabelaDeSimbolos argsRegFunc, String TipoFunc) {
+
         EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
         tabela.nome = nome;
         tabela.estrutura = estrutura;
         tabela.varTipo = varTipo;
         tabela.argsRegFunc = argsRegFunc;
-        tabela.TipoFuncao = tipofunc;        tabelaDeSimbolos.put(nome, tabela);
+        tabela.TipoFuncao = TipoFunc;
+        tabelaDeSimbolos.put(nome, tabela);
     }
 
     // Verifica se um símbolo existe na tabela de símbolos
