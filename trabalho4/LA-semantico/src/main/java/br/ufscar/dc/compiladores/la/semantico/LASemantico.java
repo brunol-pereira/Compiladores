@@ -103,12 +103,11 @@ public class LASemantico extends LABaseVisitor<Void> {
                                     TipoLA.LOGICO);
                             break;
                         default:
-                            // never reached
+                            // Caso não entre em nenhum dos casos acima
                             break;
                     }
                 }
             } else {
-                // type declaration
                 // 'tipo' IDENT ':' tipo
                 if (escopoAtual.existe(identificador)) {
                     LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
@@ -125,7 +124,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                             } else {
                                 String varTipo = variable.tipo().getText();
                                 if (!defineTypeAndAddtoScope(varIdent, varTipo, fieldsTypes)) {
-                                    // nothing happens
+                                    // Não faz nada
                                 }
                             }
                         }
@@ -143,7 +142,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                     TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
 
                     if (ctxIdentVariable.dimensao() != null)
-                        // dimension existe
+                        // Se dimensão existe
                         for (Exp_aritmeticaContext expDim : ctxIdentVariable.dimensao().exp_aritmetica())
                             LASemanticoUtils.verificarTipo(escopoAtual, expDim);
 
@@ -185,14 +184,13 @@ public class LASemantico extends LABaseVisitor<Void> {
                     }
                 }
             } else {
-                // Register with type declaration
                 ArrayList<String> registroidentificadores = new ArrayList<>();
                 for (IdentificadorContext ctxIdentReg : ctx.variavel().identificador()) {
                     String identificadorNome = ctxIdentReg.getText();
                     TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
 
                     if (escopoAtual.existe(identificadorNome)) {
-                        // identificador must be unique
+                        // Identificador único
                         LASemanticoUtils.adicionarErroSemantico(ctxIdentReg.IDENT(0).getSymbol(),
                                 "identificador " + identificadorNome + " ja declarado anteriormente\n");
                     } else {
@@ -204,7 +202,6 @@ public class LASemantico extends LABaseVisitor<Void> {
                 }
 
                 for (VariavelContext ctxVariableRegister : ctx.variavel().tipo().registro().variavel()) {
-                    // populate register context
                     for (IdentificadorContext ctxVariableRegisterIdent : ctxVariableRegister.identificador()) {
                         String registerFieldName = ctxVariableRegisterIdent.getText();
                         TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
@@ -219,7 +216,6 @@ public class LASemantico extends LABaseVisitor<Void> {
                             } else {
                                 String varTipo = ctxVariableRegister.tipo().getText();
                                 if (!defineTypeAndAddtoScope(registerFieldName, varTipo, registerFields)) {
-                                    // not a basic/primitive type
                                     if (!escopoAtual.existe(varTipo)) {
                                         LASemanticoUtils.adicionarErroSemantico(
                                                 ctxVariableRegisterIdent.IDENT(0).getSymbol(),
@@ -244,7 +240,7 @@ public class LASemantico extends LABaseVisitor<Void> {
         // Lógica para tratamento das declarações globais
         String identificador = ctx.IDENT().getText();
 
-        // Geting scopes
+        // Obtendo os escopos
         List<TabelaDeSimbolos> scopes = escopos.percorrerEscopoAninhados();
         if (scopes.size() > 1) {
             escopos.obterEscopoAtual();
@@ -252,10 +248,9 @@ public class LASemantico extends LABaseVisitor<Void> {
         TabelaDeSimbolos globalScope = escopos.obterEscopoAtual();
 
         if (ctx.tipo_estendido() != null) {
-            // has a type and returns, is a function
             escopos.criarNovoEscopo();
             TabelaDeSimbolos functionScope = escopos.obterEscopoAtual();
-            functionScope.setGlobal(globalScope); // Add global scope reference to symbolTable
+            functionScope.setGlobal(globalScope); // Adiciona um escopo global
 
             if (globalScope.existe(identificador)) {
                 LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
@@ -269,18 +264,17 @@ public class LASemantico extends LABaseVisitor<Void> {
                     String varTipo = declaredParameter.tipo_estendido().getText();
 
                     for (LAParser.IdentificadorContext ident : declaredParameter.identificador()) {
-                        // After declaring a type of a parameter, is possible to declare multiple
-                        // parameters of same type
+                        // Depois de declarar o tipo do parâmetro, podemos declarar múltiplos parâmetros do mesmo tipo
                         String parametroIdentificador = ident.getText();
 
                         if (functionScope.existe(parametroIdentificador)) {
-                            // Another parameter with same name, already defined
+                            // Outro parâmetro com mesmo nome que já tenha sido definido
                             LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
                                     "identificador " + parametroIdentificador + " ja declarado anteriormente\n");
                         } else {
                             if (defineTypeAndAddtoScope(parametroIdentificador, varTipo, functionScope)) {
                                 // Caso consiga definir os tipos para o escopo da função, reproduz para os
-                                // parametros
+                                // parâmetros
                                 defineTypeAndAddtoScope(parametroIdentificador, varTipo, funcParameters);
                             } else {
                                 // Caso não seja um dos tipo_estendido
@@ -322,10 +316,9 @@ public class LASemantico extends LABaseVisitor<Void> {
             }
 
         } else {
-            // is a procedure
             escopos.criarNovoEscopo();
             TabelaDeSimbolos procScope = escopos.obterEscopoAtual();
-            procScope.setGlobal(globalScope); // Add global scope reference to symbolTable
+            procScope.setGlobal(globalScope); // Adiciona um escopo global
 
             if (globalScope.existe(identificador)) {
                 LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
@@ -338,12 +331,11 @@ public class LASemantico extends LABaseVisitor<Void> {
                     String varTipo = declaredParameter.tipo_estendido().getText();
 
                     for (LAParser.IdentificadorContext ident : declaredParameter.identificador()) {
-                        // After declaring a type of a parameter, is possible to declare multiple
-                        // parameters of same type
+                         // Depois de declarar o tipo do parâmetro, podemos declarar múltiplos parâmetros do mesmo tipo
                         String parametroIdentificador = ident.getText();
 
                         if (procScope.existe(parametroIdentificador)) {
-                            // Another parameter with same name, already defined
+                            // Outro parâmetro com mesmo nome que já tenha sido definido
                             LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
                                     "identificador " + parametroIdentificador + " ja declarado anteriormente\n");
                         } else {
