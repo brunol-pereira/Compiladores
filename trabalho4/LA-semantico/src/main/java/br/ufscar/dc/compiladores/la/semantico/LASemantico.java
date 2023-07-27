@@ -55,13 +55,11 @@ public class LASemantico extends LABaseVisitor<Void> {
     public Void visitDeclaracao_local(LAParser.Declaracao_localContext ctx) {
     // Lógica para tratamento das declarações locais
         if (ctx.IDENT() != null) {
-            // Verifica se existe um IDENT (sequência de caracteres que define um
-            // identificador (nome))
+            // Verifica se existe um IDENT
             String identificador = ctx.IDENT().getText();
             TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
 
             if (ctx.tipo_basico() != null) {
-                // 'constante' IDENT ':' tipo_basico '=' valor_constante
                 if (escopoAtual.existe(identificador)) {
                     LASemanticoUtils.adicionarErroSemantico(ctx.IDENT().getSymbol(),
                             "identificador " + identificador + " ja declarado anteriormente\n");
@@ -93,7 +91,6 @@ public class LASemantico extends LABaseVisitor<Void> {
                             } else {
                                 String varTipo = variable.tipo().getText();
                                 if (!addTipoEscopo(varIdent, varTipo, fieldsTypes)) {
-                                    // Não faz nada
                                 }
                             }
                         }
@@ -101,9 +98,7 @@ public class LASemantico extends LABaseVisitor<Void> {
                 }
             }
         } else {
-            // 'declare' variavel
             if (ctx.variavel().tipo().registro() == null) {
-                // Não é registro
                 for (IdentificadorContext ctxIdentVariable : ctx.variavel().identificador()) {
                     String varIdent = "";
                     for (TerminalNode ident : ctxIdentVariable.IDENT())
@@ -111,11 +106,9 @@ public class LASemantico extends LABaseVisitor<Void> {
                     TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
 
                     if (ctxIdentVariable.dimensao() != null)
-                        // Se dimensão existe
                         for (Exp_aritmeticaContext expDim : ctxIdentVariable.dimensao().exp_aritmetica())
                             LASemanticoUtils.verificarTipo(escopoAtual, expDim);
 
-                    // Verifica se o identificador da variável já foi declarado anteriormente.
                     if (escopoAtual.existe(varIdent)) {
                         LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                                 "identificador " + varIdent + " ja declarado anteriormente\n");
@@ -139,8 +132,6 @@ public class LASemantico extends LABaseVisitor<Void> {
                                 }
                             }
 
-                            // Se o tipo não foi declarado, um erro semântico é adicionado informando que o
-                            // tipo não foi declarado
                             if (!escopoAtual.existe(varTipo)) {
                                 LASemanticoUtils.adicionarErroSemantico(ctxIdentVariable.IDENT(0).getSymbol(),
                                         "tipo " + varTipo + " nao declarado\n");
@@ -159,7 +150,6 @@ public class LASemantico extends LABaseVisitor<Void> {
                     TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
 
                     if (escopoAtual.existe(identificadorNome)) {
-                        // Identificador único
                         LASemanticoUtils.adicionarErroSemantico(ctxIdentReg.IDENT(0).getSymbol(),
                                 "identificador " + identificadorNome + " ja declarado anteriormente\n");
                     } else {

@@ -75,7 +75,6 @@ public class LASemanticoUtils {
                     return TabelaDeSimbolos.TipoLA.REAL;
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.LOGICO)
                     return TabelaDeSimbolos.TipoLA.LOGICO;
-
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO)
                     return TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO;
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_REAL)
@@ -121,7 +120,7 @@ public class LASemanticoUtils {
             }
 
         }
-        return null;
+        return TabelaDeSimbolos.TipoLA.NAO_DECLARADO;
 
     }
 
