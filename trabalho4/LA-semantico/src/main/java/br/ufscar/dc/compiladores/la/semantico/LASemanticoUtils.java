@@ -32,7 +32,7 @@ public class LASemanticoUtils {
             String[] part = identifier.split("\\.");
 
             if (!tabelaDeSimbolos.existe(part[0])) {
-                adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador" + identifier + "nao declarado\n");
+                adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador " + identifier + " nao declarado\n");
             }
 
             else {
@@ -41,7 +41,7 @@ public class LASemanticoUtils {
                     TabelaDeSimbolos fields = ident.argsRegFunc;
                     if (!fields.existe(part[1])) {
                         adicionarErroSemantico(ctx.IDENT(0).getSymbol(),
-                                "identificador " + identifier + "nao declarado\n");
+                                "identificador " + identifier + " nao declarado\n");
                     } else {
 
                         EntradaTabelaDeSimbolos tabela = fields.verificar(part[1]);
@@ -76,7 +76,6 @@ public class LASemanticoUtils {
                     return TabelaDeSimbolos.TipoLA.REAL;
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.LOGICO)
                     return TabelaDeSimbolos.TipoLA.LOGICO;
-
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO)
                     return TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO;
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_REAL)
@@ -99,7 +98,7 @@ public class LASemanticoUtils {
 
 
             if (!tabelaDeSimbolos.existe(SemDimensao)){
-                adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador " + SemDimensao + "nao declarado\n");
+                adicionarErroSemantico(ctx.IDENT(0).getSymbol(), "identificador " + SemDimensao + " nao declarado\n");
             }
             else{
                 EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(SemDimensao);
@@ -124,7 +123,7 @@ public class LASemanticoUtils {
             }
 
         }
-        return null;
+        return TabelaDeSimbolos.TipoLA.NAO_DECLARADO;
 
     }
 
@@ -404,10 +403,7 @@ public class LASemanticoUtils {
                 return TabelaDeSimbolos.TipoLA.ENDERECO;
             }
         }
-
-
         return ret;
     }
 }
-
 
