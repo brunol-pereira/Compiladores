@@ -61,6 +61,7 @@ public class LASemanticoUtils {
                             return TabelaDeSimbolos.TipoLA.PONTEIRO_LOGICO;
                         if (tabela.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_LITERAL)
                             return TabelaDeSimbolos.TipoLA.PONTEIRO_LITERAL;
+            
                     }
                 }
 
@@ -118,6 +119,8 @@ public class LASemanticoUtils {
                     return TabelaDeSimbolos.TipoLA.PONTEIRO_LOGICO;
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_LITERAL)
                     return TabelaDeSimbolos.TipoLA.PONTEIRO_LITERAL;
+                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.REGISTRO)
+                            return TabelaDeSimbolos.TipoLA.REGISTRO;
             }
 
         }
