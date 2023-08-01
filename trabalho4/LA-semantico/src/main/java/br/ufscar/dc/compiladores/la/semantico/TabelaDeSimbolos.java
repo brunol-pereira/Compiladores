@@ -107,14 +107,5 @@ public class TabelaDeSimbolos {
         }
         
         return true;
-    }
-
-
-//--------------Correção do visual studio---------------------//
-
-    private static int size() {
-        return 0;
-    }
-
-//------------------------------------------------------------//    
+    }  
 }

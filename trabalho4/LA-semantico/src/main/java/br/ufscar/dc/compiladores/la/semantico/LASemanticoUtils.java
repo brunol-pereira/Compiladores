@@ -160,28 +160,28 @@ public class LASemanticoUtils {
     }
 
     // Verifica o tipo de um fator lógico em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.Fator_logicoContext ctx) {
-        return verificarTipo(tabelaDeSimbolos, ctx.parcela_logica());
+        return verificarTipo(ts, ctx.parcela_logica());
     }
 
     // Verifica o tipo de uma parcela lógica em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.Parcela_logicaContext ctx) {
         if (ctx.exp_relacional() != null) {
-            return verificarTipo(tabelaDeSimbolos, ctx.exp_relacional());
+            return verificarTipo(ts, ctx.exp_relacional());
         } else {
             return TabelaDeSimbolos.TipoLA.LOGICO;
         }
     }
 
     // Verifica o tipo de uma expressão relacional em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.Exp_relacionalContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
         if (ctx.exp_aritmetica().size() == 1)
             for (Exp_aritmeticaContext ea : ctx.exp_aritmetica()) {
-                TipoLA aux = verificarTipo(tabelaDeSimbolos, ea);
+                TipoLA aux = verificarTipo(ts, ea);
                 if (ret == null) {
                     ret = aux;
                 } else if (!verificarTipo(ret, aux)) {
@@ -190,7 +190,7 @@ public class LASemanticoUtils {
             }
         else {
             for (Exp_aritmeticaContext ea : ctx.exp_aritmetica()) {
-                verificarTipo(tabelaDeSimbolos, ea);
+                verificarTipo(ts, ea);
             }
 
             return TabelaDeSimbolos.TipoLA.LOGICO;
@@ -200,12 +200,12 @@ public class LASemanticoUtils {
     }
 
     // Verifica o tipo de uma expressão aritmética em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.Exp_aritmeticaContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
 
         for (TermoContext te : ctx.termo()) {
-            TipoLA aux = verificarTipo(tabelaDeSimbolos, te);
+            TipoLA aux = verificarTipo(ts, te);
             if (ret == null) {
                 ret = aux;
             } else if (!verificarTipo(ret, aux)) {
@@ -216,12 +216,12 @@ public class LASemanticoUtils {
     }
 
     // Verifica o tipo de um termo em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.TermoContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
 
         for (FatorContext fa : ctx.fator()) {
-            TipoLA aux = verificarTipo(tabelaDeSimbolos, fa);
+            TipoLA aux = verificarTipo(ts, fa);
             if (ret == null) {
                 ret = aux;
             } else if (!verificarTipo(ret, aux)) {
@@ -232,12 +232,12 @@ public class LASemanticoUtils {
     }
 
     // Verifica o tipo de um fator em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.FatorContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
 
         for (ParcelaContext pa : ctx.parcela()) {
-            TipoLA aux = verificarTipo(tabelaDeSimbolos, pa);
+            TipoLA aux = verificarTipo(ts, pa);
             if (ret == null) {
                 ret = aux;
             } else if (!verificarTipo(ret, aux)) {
@@ -249,13 +249,13 @@ public class LASemanticoUtils {
     }
 
     // Verifica o tipo de uma parcela em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabelaDeSimbolos,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.ParcelaContext ctx) {
 
         if (ctx.parcela_unario() != null) {
-            return verificarTipo(tabelaDeSimbolos, ctx.parcela_unario());
+            return verificarTipo(ts, ctx.parcela_unario());
         } else {
-            return verificarTipo(tabelaDeSimbolos, ctx.parcela_nao_unario());
+            return verificarTipo(ts, ctx.parcela_nao_unario());
         }
     }
 
@@ -390,7 +390,7 @@ public class LASemanticoUtils {
     }
 
     // Verifica o tipo de uma parcela não unária em um contexto específico
-    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos tabela,
+    public static TabelaDeSimbolos.TipoLA verificarTipo(TabelaDeSimbolos ts,
             LAParser.Parcela_nao_unarioContext ctx) {
         TabelaDeSimbolos.TipoLA ret = null;
 
@@ -398,7 +398,7 @@ public class LASemanticoUtils {
             ret = TabelaDeSimbolos.TipoLA.LITERAL;
         }
         else{
-            ret = verificarTipo(tabela, ctx.identificador());
+            ret = verificarTipo(ts, ctx.identificador());
             if (ctx.getText().contains("&")){
                 return TabelaDeSimbolos.TipoLA.ENDERECO;
             }
