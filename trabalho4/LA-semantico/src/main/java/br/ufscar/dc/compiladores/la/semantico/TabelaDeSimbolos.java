@@ -97,7 +97,7 @@ public class TabelaDeSimbolos {
     public boolean validar(ArrayList<TabelaDeSimbolos.TipoLA> types){
         int contador = 0;
         
-        if(TabelaDeSimbolos.size() != types.size())
+        if(tabelaDeSimbolos.size() != types.size())
             return false;
         for(EntradaTabelaDeSimbolos entry: tabelaDeSimbolos.values()){
             if(types.get(contador) != entry.varTipo){
@@ -107,14 +107,5 @@ public class TabelaDeSimbolos {
         }
         
         return true;
-    }
-
-
-//--------------Correção do visual studio---------------------//
-
-    private static int size() {
-        return 0;
-    }
-
-//------------------------------------------------------------//    
+    }  
 }
