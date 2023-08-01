@@ -38,13 +38,13 @@ public class LASemanticoUtils {
             else {
                 EntradaTabelaDeSimbolos ident = tabelaDeSimbolos.verificar(part[0]);
                 if (ident.estrutura == TabelaDeSimbolos.EstruturaLA.REGISTRO && part.length > 1) {
-                    TabelaDeSimbolos fields = ident.argsRegFunc;
-                    if (!fields.existe(part[1])) {
+                    TabelaDeSimbolos campos = ident.argsRegFunc;
+                    if (!campos.existe(part[1])) {
                         adicionarErroSemantico(ctx.IDENT(0).getSymbol(),
                                 "identificador " + identifier + " nao declarado\n");
                     } else {
 
-                        EntradaTabelaDeSimbolos tabela = fields.verificar(part[1]);
+                        EntradaTabelaDeSimbolos tabela = campos.verificar(part[1]);
                         if (tabela.varTipo == TabelaDeSimbolos.TipoLA.INTEIRO)
                             return TabelaDeSimbolos.TipoLA.INTEIRO;
                         if (tabela.varTipo == TabelaDeSimbolos.TipoLA.LITERAL)
@@ -319,18 +319,18 @@ public class LASemanticoUtils {
                         break;
                 }
 
-                String nameFun = ctx.IDENT().getText();
-                EntradaTabelaDeSimbolos funProc = tabelaDeSimbolos.verificar(nameFun);
+                String nomeFunc = ctx.IDENT().getText();
+                EntradaTabelaDeSimbolos buscaFunc = tabelaDeSimbolos.verificar(nomeFunc);
 
-                ArrayList<TabelaDeSimbolos.TipoLA> parameterTypes = new ArrayList<>();
+                ArrayList<TabelaDeSimbolos.TipoLA> tiposParametro = new ArrayList<>();
 
                 for (ExpressaoContext exp : ctx.expressao()) {
-                    parameterTypes.add(verificarTipo(tabelaDeSimbolos, exp));
+                    tiposParametro.add(verificarTipo(tabelaDeSimbolos, exp));
                 }
 
-                if (!funProc.argsRegFunc.validar(parameterTypes)) {
+                if (!buscaFunc.argsRegFunc.validar(tiposParametro)) {
                     adicionarErroSemantico(ctx.IDENT().getSymbol(),
-                            "incompatibilidade de parametros na chamada de " + nameFun + "\n");
+                            "incompatibilidade de parametros na chamada de " + nomeFunc + "\n");
                 }
             }
         }
