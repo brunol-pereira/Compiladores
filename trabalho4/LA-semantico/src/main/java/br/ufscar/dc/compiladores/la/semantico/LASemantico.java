@@ -1,4 +1,4 @@
-// Pacote e importações do código
+// Pacote e importações necessárias
 package br.ufscar.dc.compiladores.la.semantico;
 
 import java.util.ArrayList;
@@ -18,16 +18,16 @@ import br.ufscar.dc.compiladores.la.semantico.LAParser.IdentificadorContext;
 import br.ufscar.dc.compiladores.la.semantico.LAParser.VariavelContext;
 import br.ufscar.dc.compiladores.la.semantico.TabelaDeSimbolos.TipoLA;;
 
-// Definição da classe LASemantico
+// Classe principal que estende o visitor do ANTLR
 public class LASemantico extends LABaseVisitor<Void> {
 
+    // Variáveis para manter informações sobre os escopos e a tabela de símbolos
     Escopo escopos = new Escopo(); // Objeto para gerenciar escopos
     TabelaDeSimbolos tabelaDeSimbolos; // Tabela de símbolos
 
-    // Método para definir o tipo e adicionar à tabela de símbolos
+    // Método para adicionar uma variável na tabela de símbolos com seu tipo.
     Boolean addTipoEscopo(String varIdent, String varTipo, TabelaDeSimbolos tabelaDeSimbolos) {
-        // Switch-case para identificar o tipo da variável e adicioná-la à tabela de
-        // símbolos conforme o tipo correspondente.
+        // Implementação para adicionar o tipo da variável na tabela de símbolos
         if (varTipo.equals("inteiro")) {
             tabelaDeSimbolos.put(varIdent, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.INTEIRO);
         } else if (varTipo.equals("real")) {
@@ -53,7 +53,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar e realizar ações na declaração local do programa
     @Override
     public Void visitDeclaracao_local(LAParser.Declaracao_localContext ctx) {
-    // Lógica para tratamento das declarações locais
+    // Implementação para visitar a declaração local e adicionar variáveis e tipos na tabela de símbolos
         if (ctx.IDENT() != null) {
             // Verifica se existe um IDENT
             String identificador = ctx.IDENT().getText();
@@ -197,7 +197,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar e realizar ações na declaração global do programa
     @Override
     public Void visitDeclaracao_global(Declaracao_globalContext ctx) {
-        // Lógica para tratamento das declarações globais
+        // Implementação para visitar a declaração global e adicionar funções e procedimentos na tabela de símbolos
         String identificador = ctx.IDENT().getText();
 
         // Obtendo os escopos
@@ -323,7 +323,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar e realizar ações na chamada de procedimento ou função
     @Override
     public Void visitCmdChamada(CmdChamadaContext ctx) {
-        // Lógica para tratamento de chamadas de procedimentos ou funções
+        // Implementação para verificar se a chamada de função/procedimento está correta e os tipos dos parâmetros
 
         TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
         String identificador = ctx.IDENT().getText();
@@ -343,7 +343,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar e realizar ações na atribuição de valores a variáveis
     @Override
     public Void visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
-        // Lógica para tratamento de atribuições de valores a variáveis
+        // Implementação para verificar se a atribuição está correta e os tipos dos operandos são compatíveis
         TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
         TipoLA leftValue = LASemanticoUtils.verificarTipo(escopoAtual, ctx.identificador());
         TipoLA rightValue = LASemanticoUtils.verificarTipo(escopoAtual, ctx.expressao());
@@ -373,7 +373,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar e realizar ações na leitura de valores para variáveis
     @Override
     public Void visitCmdLeia(CmdLeiaContext ctx) {
-        // Lógica para tratamento da leitura de valores para variáveis
+        // Implementação para verificar se a leitura está correta e os tipos das variáveis são compatíveis
 
         // Obtemos o escopo atual através da variável escopoAtual
         TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
@@ -389,7 +389,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar e realizar ações em expressões aritméticas
     @Override
     public Void visitExp_aritmetica(LAParser.Exp_aritmeticaContext ctx) {
-        // Lógica para tratamento de expressões aritméticas
+        // Implementação para verificar se a expressão aritmética está correta e os tipos dos operandos são compatíveis
         TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
         LASemanticoUtils.verificarTipo(escopoAtual, ctx);
         return super.visitExp_aritmetica(ctx);
@@ -398,7 +398,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar o programa
     @Override
     public Void visitPrograma(LAParser.ProgramaContext ctx) {
-        // Lógica para tratamento do programa
+        // Implementação para verificar se o programa principal está correto
         for (CmdContext ctxCmd : ctx.corpo().cmd()) {
             if (ctxCmd.cmdRetorne() != null) {
                 LASemanticoUtils.adicionarErroSemantico(ctxCmd.cmdRetorne().getStart(), "comando retorne nao permitido nesse escopo\n");
@@ -420,7 +420,7 @@ public class LASemantico extends LABaseVisitor<Void> {
     // Método para visitar o corpo do programa
     @Override
     public Void visitCorpo(LAParser.CorpoContext ctx) {
-        // Lógica para tratamento do corpo do programa
+        // Implementação para visitar o corpo do programa e definir escopo
         List<TabelaDeSimbolos> scopes = escopos.percorrerEscopoAninhados();
         if (scopes.size() > 1) {
             escopos.obterEscopoAtual();
