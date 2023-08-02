@@ -43,7 +43,7 @@ public class TabelaDeSimbolos {
     }
 
     // Adiciona uma entrada à tabela de símbolos
-    public void put(String nome, EstruturaLA estrutura,TipoLA varTipo ) {
+    public void put(String nome, EstruturaLA estrutura,TipoLA varTipo) {
 
         EntradaTabelaDeSimbolos tabela = new EntradaTabelaDeSimbolos();
         tabela.nome = nome;
@@ -107,5 +107,5 @@ public class TabelaDeSimbolos {
         }
         
         return true;
-    }  
+    }
 }
