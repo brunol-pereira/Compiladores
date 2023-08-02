@@ -1,7 +1,6 @@
 package br.ufscar.dc.compiladores.la.semantico;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class TabelaDeSimbolos {
 
