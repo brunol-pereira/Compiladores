@@ -287,7 +287,7 @@ public class LASemanticoUtils {
             }
 
             if (tabelaDeSimbolos.existe(ctx.IDENT().getText())) {
-                // return type
+                // returna o tipo
                 EntradaTabelaDeSimbolos function = tabelaDeSimbolos.verificar(ctx.IDENT().getText()); 
                 switch (function.TipoFuncao) {
                     case "inteiro":
