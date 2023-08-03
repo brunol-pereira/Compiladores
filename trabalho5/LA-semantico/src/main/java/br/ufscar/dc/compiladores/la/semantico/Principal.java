@@ -111,12 +111,13 @@ public class Principal {
                 pw.write(s);
             }
             pw.write("Fim da compilacao\n");
-        }else{
+        } else{
             var geradorC = new LAGeradorC();
-            geradorC.visitPrograma(programa);
+            geradorC.visitPrograma(arvore);
             var saida = geradorC.saida;
             pw.write(saida.toString());
         }
+        pw.write("Fim da compilacao\n");
         
         pw.close();
 

@@ -110,16 +110,8 @@ public class LASemanticoUtils {
                     return TabelaDeSimbolos.TipoLA.REAL;
                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.LOGICO)
                     return TabelaDeSimbolos.TipoLA.LOGICO;
-                if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO)
-                    return TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO;
-                if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_REAL)
-                    return TabelaDeSimbolos.TipoLA.PONTEIRO_REAL;
-                if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_LOGICO)
-                    return TabelaDeSimbolos.TipoLA.PONTEIRO_LOGICO;
-                if (ident.varTipo == TabelaDeSimbolos.TipoLA.PONTEIRO_LITERAL)
-                    return TabelaDeSimbolos.TipoLA.PONTEIRO_LITERAL;
-                 if (ident.varTipo == TabelaDeSimbolos.TipoLA.REGISTRO)
-                            return TabelaDeSimbolos.TipoLA.REGISTRO;
+                if (ident.varTipo == TabelaDeSimbolos.TipoLA.REGISTRO)
+                    return TabelaDeSimbolos.TipoLA.REGISTRO;
             }
 
         }
@@ -367,21 +359,6 @@ public class LASemanticoUtils {
             ) && tipo2 == TabelaDeSimbolos.TipoLA.ENDERECO
             )
             return true;
-            if ( 
-                (
-                    tipo1 == TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO
-                    || 
-                    tipo1 == TabelaDeSimbolos.TipoLA.PONTEIRO_REAL 
-                    || 
-                    tipo1 == TabelaDeSimbolos.TipoLA.PONTEIRO_LOGICO
-                    || 
-                    tipo1 == TabelaDeSimbolos.TipoLA.PONTEIRO_LOGICO
-                ) 
-                && 
-                tipo2 == TabelaDeSimbolos.TipoLA.ENDERECO
-            )
-            return true;
-
 
         if (tipo1 != tipo2)
             return false;

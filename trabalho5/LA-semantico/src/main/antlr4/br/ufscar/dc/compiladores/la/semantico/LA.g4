@@ -284,8 +284,8 @@ cmdEscreva
     : 'escreva' '(' expressao (',' expressao)* ')'
     ;
     
-cmdSe
-    : 'se' expressao 'entao' cmd* ('senao' cmd*)? 'fim_se'
+cmdSe:
+    'se'  expressao 'entao' (cmdIf+=cmd)* ('senao' (cmdElse+=cmd)*)? 'fim_se'
     ;
     
 cmdCaso

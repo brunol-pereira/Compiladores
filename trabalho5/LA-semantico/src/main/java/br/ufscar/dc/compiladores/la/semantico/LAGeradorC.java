@@ -43,10 +43,10 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     Escopo escopos = new Escopo();
     TabelaDeSimbolos tabelaDeSimbolos;
 
-    public Construtor saida;
+    public StringBuilder saida;
 
     public LAGeradorC() {
-        saida = new Construtor();
+        saida = new StringBuilder();
         this.tabelaDeSimbolos = new TabelaDeSimbolos();
     }
 
@@ -225,8 +225,8 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                         String nomeDoCampo = ctxVariableRegisterIdent.getText();
                         TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
 
-                        for (String registroidentificadores : registroidentificadores) {
-                            EntradaTabelaDeSimbolos entrada = escopoAtual.verificar(registroidentificadores);
+                        for (String registroidentificador : registroidentificadores) {
+                            EntradaTabelaDeSimbolos entrada = escopoAtual.verificar(registroidentificador);
                             TabelaDeSimbolos registrarCampos = entrada.argsRegFunc;
 
                             String varTipo = ctxVariableRegister.tipo().getText();
@@ -239,8 +239,8 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                     }
                 }
                 saida.append("    }"); 
-                for(String registroidentificadores : registroidentificadores){
-                    saida.append(registroidentificadores);
+                for(String registroidentificador : registroidentificadores){
+                    saida.append(registroidentificador);
                 }
                 saida.append(";\n");
             }
@@ -327,7 +327,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                                     TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO);
                             saida.append("int* " + parametroIdentificador);
                         default:
-                            if (escopoGeral.exists(varTipo) && escopoGeral.verificar(
+                            if (escopoGeral.existe(varTipo) && escopoGeral.verificar(
                                     varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
                                 EntradaTabelaDeSimbolos campos = escopoGeral.verificar(varTipo);
                                 TabelaDeSimbolos tipoTabela = campos.argsRegFunc;
@@ -346,7 +346,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
             saida.append(") {\n");
 
         } else {
-            escopos.createNewScope();
+            escopos.criarNovoEscopo();
             TabelaDeSimbolos escopoFuncao = escopos.obterEscopoAtual();
             escopoFuncao.setGlobal(escopoGeral);
 
@@ -410,7 +410,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                                     TabelaDeSimbolos.TipoLA.PONTEIRO_INTEIRO);
                             saida.append("int* " + parametroIdentificador);
                         default:
-                            if (escopoGeral.exists(varTipo) && escopoGeral.verificar(
+                            if (escopoGeral.existe(varTipo) && escopoGeral.verificar(
                                     varTipo).estrutura == TabelaDeSimbolos.EstruturaLA.TIPO) {
                                 EntradaTabelaDeSimbolos campos = escopoGeral.verificar(varTipo);
                                 TabelaDeSimbolos tipoTabela = campos.argsRegFunc;
@@ -451,7 +451,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
             if (atribuicao[0].contains("^")) {
                 saida.append("*");
             }
-            TabelaDeSimbolos.TipoLA varTipo = LASemanticUtils.verificarTipo(escopoAtual, ctx.identificador());
+            TabelaDeSimbolos.TipoLA varTipo = LASemanticoUtils.verificarTipo(escopoAtual, ctx.identificador());
 
             if (varTipo == TabelaDeSimbolos.TipoLA.LITERAL) {
                 saida.append("strcpy(");
@@ -495,8 +495,8 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     public Void visitCmdEscreva(CmdEscrevaContext ctx) {
         for (LAParser.ExpressaoContext exp : ctx.expressao()) {
             TabelaDeSimbolos escopoAtual = escopos.obterEscopoAtual();
-            String cType = pegarTipo(LASemanticUtils.verificarTipo(escopoAtual, exp));
-            if (escopoAtual.exists(exp.getText())) {
+            String cType = pegarTipo(LASemanticoUtils.verificarTipo(escopoAtual, exp));
+            if (escopoAtual.existe(exp.getText())) {
                 TabelaDeSimbolos.TipoLA varTipo = escopoAtual.verificar(exp.getText()).varTipo;
                 cType = pegarTipo(varTipo);
             }
@@ -538,7 +538,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
         saida.append("}\n");
         if (ctx.getText().contains("senao")) {
             saida.append("else {\n");
-            for (CmdContext cmd : ctx.cmdElse) {
+            for (CmdContext cmd : ctx.cmd) {
                 visitCmd(cmd);
             }
             saida.append("}\n");
