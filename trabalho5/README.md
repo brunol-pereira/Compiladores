@@ -1,6 +1,6 @@
 # Trabalho para implementação de um Analisador Semântico.
 
-Trabalho 4 de Construção de Compiladores, cujo objetivo é implementar um Analisador Semântico para a linguagem LA (Linguagem Algorítmica).
+Trabalho 5 de Construção de Compiladores, cujo objetivo é  criar um Gerador de Código C para a Linguagem LA (Linguagem Algorítmica).
 
 <div>
 
