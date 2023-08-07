@@ -528,32 +528,22 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     }
 
     @Override
-    public Void visitCmdSe(LAParser.CmdSeContext ctx) {
-
-        saida.append("\tif ("); 
-        visitExpressao(ctx.expressao()); 
+    public Void visitCmdSe(CmdSeContext ctx) {//transcrição do comando if else
+        saida.append("if(");
+        visitExpressao(ctx.expressao());
         saida.append(") {\n");
-
-        for (CmdContext cmdCtx: ctx.cmdIf)
-        {
-            saida.append("\t");
-            visitCmd(cmdCtx);
+        for(CmdContext cmd : ctx.cmd()) {
+            visitCmd(cmd);
         }
-
-        saida.append("\t}\n");
-
-        if (ctx.ELSE() != null){
-            saida.append("\telse {\n");
-
-            for (CmdContext cmdCtx : ctx.cmdElse)
-            {
-                saida.append("\t");
-                visitCmd(cmdCtx);
+        saida.append("}\n");
+        if(ctx.getText().contains("senao")){
+            saida.append("else {\n");
+            for(CmdContext cmd : ctx.cmdElse) {
+                visitCmd(cmd);
             }
-
-            saida.append("\t}\n");
+            saida.append("}\n");
         }
-
+        
         return null;
     }
 
@@ -687,7 +677,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                     saida.append(", ");
                 }
             }
-        } else if (ctx.ABREPAR != null) {
+        } else if (ctx.ABREPAR() != null) {
             saida.append("(");
             ctx.expressao().forEach(exp -> visitExpressao(exp));
             saida.append(")");

@@ -293,7 +293,7 @@ cmdCaso
     ;
     
 cmdPara
-    : 'para' IDENT '<-' exp_aritmetica 'ate' exp_aritmetica 'faca' cmd* 'fim_para'
+    : 'para' IDENT '<-' inicioExp=exp_aritmetica 'ate' fimExp=exp_aritmetica 'faca' cmd* 'fim_para'
     ;
     
 cmdEnquanto
@@ -329,7 +329,7 @@ constantes
     ;
     
 numero_intervalo
-    : op_unario? NUM_INT ('..' op_unario? NUM_INT)?
+    : op_inicio=op_unario? inicio=NUM_INT ('..' op_fim=op_unario? fim=NUM_INT)?
     ;
     
 op_unario
