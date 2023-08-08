@@ -118,7 +118,6 @@ public class Principal {
             var saida = geradorC.saida;
             pw.write(saida.toString());
         }
-        pw.write("Fim da compilacao\n");
         
         pw.close();
 

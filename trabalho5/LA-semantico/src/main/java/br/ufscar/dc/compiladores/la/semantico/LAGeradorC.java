@@ -103,35 +103,35 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     Boolean addTipoEscopo(String varIdent, String varTipo, TabelaDeSimbolos tabelaDeSimbolos) {
         switch (varTipo) {
             case "inteiro":
-                saida.append("  int " + varTipo + ";\n");
+                saida.append("      int " + varTipo + ";\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.INTEIRO);
                 break;
             case "literal":
-                saida.append("  char " + varTipo + "[80];\n");
+                saida.append("      char " + varTipo + "[80];\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.LITERAL);
                 break;
             case "real":
-                saida.append("  float " + varTipo + ";\n");
+                saida.append("      float " + varTipo + ";\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.REAL);
                 break;
             case "logico":
-                saida.append("  boolean " + varTipo + ";\n");
+                saida.append("      boolean " + varTipo + ";\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.LOGICO);
                 break;
             case "^logico":
-                saida.append("  boolean* " + varTipo + ";\n");
+                saida.append("      boolean* " + varTipo + ";\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_LOGICO);
                 break;
             case "^real":
-                saida.append("  float* " + varTipo + ";\n");
+                saida.append("      float* " + varTipo + ";\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_REAL);
                 break;
             case "^literal":
-                saida.append("  char* " + varTipo + "[80];\n");
+                saida.append("      char* " + varTipo + "[80];\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_LITERAL);
                 break;
             case "^inteiro":
-                saida.append("  int* " + varTipo + ";\n");
+                saida.append("      int* " + varTipo + ";\n");
                 tabelaDeSimbolos.put(varTipo, TabelaDeSimbolos.EstruturaLA.VARIAVEL, TipoLA.PONTEIRO_INTEIRO);
                 break;
             default:
@@ -184,7 +184,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                         
                     }
                 }
-                saida.append("  } " + identificador + ";\n");
+                saida.append("   } " + identificador + ";\n");
                 
             }
         }else{
